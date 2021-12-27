@@ -17,5 +17,7 @@
 ![ER-Schema](./img/ER-Schema.png)
 ***
 
+### 릴레이션 스키마
+![릴레이션 스키마](./img/LMUN-Relation-Schema.png)
 ### 문서로 이동
 * [시나리오. ](https://github.com/jsjg73/LMUN_Ver2.1/blob/4d51b994f1b1aad8fd2005a91cb314be7b3e30fe/documents/%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4.txt)
