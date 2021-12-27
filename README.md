@@ -14,11 +14,8 @@
 
 ### E-R Schema
 
-![ER-Schema](./ER-Schema.png)
+![ER-Schema](./img/ER-Schema.png)
 ***
 
-### DB 선택 고려사항
-- nosql mongoDB 선택
-  - 회원, 비회원을 동시에 다룰 수 있는 스케마 필요
-  - 모임 객체는 TTL을 지정해서 일정 시간 이후 DB에서 제거되어야한다.
-  - 추천 장소를 검색하는데 geospatial query(near query) 지원 필요
+### 문서로 이동
+* [시나리오. ](https://github.com/jsjg73/LMUN_Ver2.1/blob/4d51b994f1b1aad8fd2005a91cb314be7b3e30fe/documents/%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4.txt)
