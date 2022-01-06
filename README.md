@@ -17,7 +17,7 @@
     - 항상 가던 장소가 아닌 새로운 장소를 선택할 근거 제시.
 
 ---
-### [시나리오](https://github.com/jsjg73/LMUN_Ver2.1/blob/4d51b994f1b1aad8fd2005a91cb314be7b3e30fe/documents/%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4.txt)
+### [시나리오](documents/시나리오.txt))
 1. 모임 시나리오
 
     1.1 생성 시나리오
