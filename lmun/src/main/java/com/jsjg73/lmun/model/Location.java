@@ -1,6 +1,16 @@
 package com.jsjg73.lmun.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+@Entity
 public class Location {
+	@Id
 	private Long id;
 	private String placeName;
 	private Double lon;
@@ -8,6 +18,10 @@ public class Location {
 	private String addressName;
 	private String roadAddressName;
 	private Category categoryGroupCode;
+	
+	@ManyToMany(mappedBy = "departures", fetch = FetchType.LAZY)
+	private Set<User> users = new HashSet<>();
+	
 	public Location() {
 	}
 	public Location(Long id, String placeName, Double lon, Double lat, String addressName, String roadAddressName,

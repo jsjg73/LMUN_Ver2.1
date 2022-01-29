@@ -17,6 +17,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,6 +28,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jsjg73.lmun.dto.LoginForm;
 import com.jsjg73.lmun.exceptions.DuplicatedUsernameException;
 import com.jsjg73.lmun.exceptions.PasswordException;
+import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.model.Location;
 import com.jsjg73.lmun.model.User;
@@ -38,6 +40,8 @@ import com.jsjg73.lmun.resources.UserResource;
 public class UserTests {
 	@Autowired
 	MockMvc mockMvc;
+	@Autowired
+	JwtUtil jwtUtil;
 	
 	static Location departure;
 	static User user;
@@ -46,18 +50,6 @@ public class UserTests {
 	
 	@BeforeAll
 	public static void beforeAll() {
-//		"place_name": "장생당약국",
-//	      "distance": "",
-//	      "place_url": "http://place.map.kakao.com/16618597",
-//	      "category_name": "의료,건강 > 약국",
-//	      "address_name": "서울 강남구 대치동 943-16",
-//	      "road_address_name": "서울 강남구 테헤란로84길 17",
-//	      "id": "16618597",
-//	      "phone": "02-558-5476",
-//	      "category_group_code": "PM9",
-//	      "category_group_name": "약국",
-//	      "x": "127.05897078335246",
-//	      "y": "37.506051888130386"
 		departure = new Location(16618597L,
 				"장생당약국", 
 				127.05897078335246, 37.506051888130386, 
@@ -100,7 +92,7 @@ public class UserTests {
 		
 		assertNotNull(token);
 		
-//		assertEquals(user.getUsername(), JwtUtil.decode(token).getSubject());
+		assertEquals(user.getUsername(), jwtUtil.extractUsername(token));
 	}
 
 	@Test
@@ -128,7 +120,7 @@ public class UserTests {
 		.andExpect(status().is4xxClientError())
 		.andExpect(handler().handlerType(UserResource.class))
 		.andExpect(handler().methodName("registerUser"))
-		.andExpect(result-> assertInstanceOf(DuplicatedUsernameException.class, result.getResolvedException()))
+		.andExpect(result-> assertInstanceOf(DuplicateKeyException.class, result.getResolvedException()))
 		.andExpect(result->{
 			assertEquals("Duplicated user ID", result.getResolvedException().getMessage());
 		});
