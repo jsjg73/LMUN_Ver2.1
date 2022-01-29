@@ -17,7 +17,8 @@
     - 항상 가던 장소가 아닌 새로운 장소를 선택할 근거 제시.
 
 ---
-### [시나리오](documents/시나리오.txt))
+## 시나리오
+link : [시나리오.txt](documents/시나리오.txt)
 1. 모임 시나리오
 
     1.1 생성 시나리오
@@ -38,15 +39,41 @@
 
     2.1 회원 계정 시나리오
 
-    2.2 비회원 계정 시나리오
+    2.2 인증 시나리오
+
+    2.3 권한 시나리오
+---
+## [릴레이션 스키마](./img/LMUN-Relation-Schema.png)
 
 ---
-### 릴레이션 스키마
-![릴레이션 스키마](./img/LMUN-Relation-Schema.png)
+
+## [ER-Schema](./img/ER-DIAGRAM.png)
 
 ---
-### E-R 다이어그램
+## API 상세
+link :  [api상세.md](documents/api상세.md)
+1. 참가 모임 조회
+2. 모임 생성   
+3. 모임 조회    
+4. 모임 수정  
+5. 모임 참가     
+6. 참석자 출발지 목록  
+7. 모임 로그 조회    
+8. 제안 생성
+9. 제안 조회   
+1. 제안 동의하기   
+2. 계정 생성  
+3. 로그인
 
-![ER-Schema](./img/ER-DIAGRAM.png)
+| depth 1 |      2      |      3     |       4      |        methods        |
+|:-------:|:-----------:|:----------:|:------------:|:---------------------:|
+| meeting |             |            |              | GET(인증), POST(인증) |
+|         | {meetingId} |            |              | GET, PUT(인가)        |
+|         |             | entrance   |              | PUT(인증)             |
+|         |             | departures |              | GET(인가)             |
+|         |             | log        |              | GET(인가)             |
+|         |             | proposal   |              | POST(인가)            |
+|         |             |            | {proposalId} | GET(인가),PUT(인가)             |
+| user    |             |            |              | POST                  |
+|         |login        |            |              | POST                  |
 
----
