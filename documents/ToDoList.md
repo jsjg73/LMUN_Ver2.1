@@ -1,8 +1,5 @@
 ### E-R SCHEMA 
 - 추천 장소 속성 추가
-- 모임 테이블 : 
-   - 인원수정시간 -> 수정시간
-   - 생성 시간 칼럼 추가.
 - 모임 로그에 대한 스케마 설계(elastic search)
 ### Learning Test
 - Elasticsearch 학습 테스트
