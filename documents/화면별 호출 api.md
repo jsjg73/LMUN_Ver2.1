@@ -13,11 +13,10 @@
    - 모임 조회 : GET /meeting/{meetingId}
    - 참석자 출발지 목록 : GET /meeting/{meetingId}/departures
    - 모임 로그 조회 : GET /meeting/{meetingId}/log
-4. 비로그인 모임 입장 화면
-   - 모임 조회 (참가자 목록)
-   - 비회원 모임 참가(비회원 계정 생성 & 모임 참가) : PUT /meeting/{meetingId}/entrance/nonmember
-5. 추천 지역 상세 화면
+4. 추천 지역 상세 화면
    - 모임 조회
    - 참가자 출발지 목록
    - 추천 지역 검색 서비스(외부 API)
-   - 모임 장소 제안 : POST /meeting/{meetingId}/proposal
+   - 모임 장소 제안 하기 : POST /meeting/{meetingId}/proposal
+   - 장소 제안 조회 : GET /meeting/{meetingId}/proposal/{propsalId}
+   - 제안에 동의하기 : PUT /meeting/{meetingId}/proposal/{propsalId}

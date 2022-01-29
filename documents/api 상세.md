@@ -217,7 +217,7 @@
       "success": true or false
    }
    ```
-10. 계정 생성
+2. 계정 생성
    - Description : 새로운 계정을 생성한다.
    ```
    POST /user
@@ -228,26 +228,28 @@
       "username": 사용자 계정 아이디,
       "password": 비밀번호,
       "nick": 이름,
-      "departure":{
-         "id": 장소 id,
-         "place_name": 장소명,
-         "lon": 경도,
-         "lat": 위도,
-         "address_name": 지번 주소,
-         "road_address_name": 도로명 주소,
-         "category_group_code": 코드,
-         "category_group_name": 코드 설명
-      }
+      "departures":[
+         {
+            "id": 장소 id,
+            "place_name": 장소명,
+            "lon": 경도,
+            "lat": 위도,
+            "address_name": 지번 주소,
+            "road_address_name": 도로명 주소,
+            "category_group_code": 코드
+         },
+         ...
+      ]
    }
    Response:
    {  
       "token": jwt 토큰 
    }
    ```
-11. 로그인
+3. 로그인
    - Description : 로그인한다.
    ```
-   POST /login
+   POST /user/login
    ```
    ```(json)
    Request:
@@ -270,6 +272,7 @@
 |         |             | proposal   |              | POST(인가)            |
 |         |             |            | {proposalId} | GET(인가),PUT(인가)             |
 | user    |             |            |              | POST                  |
+|         |login        |            |              | POST                  |
 
 ---
 
