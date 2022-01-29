@@ -1,21 +1,3 @@
-   - Description : 모임 ID로 단일 모임 조회한다.
-   ```
-   POST /meeting
-   Authorization: Bearer {JWT}
-   ```
-   ```(json)
-   Request:
-   {
-      "": ,
-      "": 
-   }
-   Response:
-   {  
-      "": ,
-      "": 
-   }
-   ```
-   
 1. 참가 모임 조회
    - Description : 사용자가 참가한 전체 모임 목록을 조회한다.  
    ```
@@ -25,6 +7,7 @@
    ```(json)
    Response:
    {  
+      "username": 사용자 계정 아이디,
       "nick": 사용자 이름,
       "tot": 참가 모임 수,
       "meetings":[
@@ -78,7 +61,7 @@
       ]
    }
    ```
-3. 모임 수정
+4. 모임 수정
    - Description : {meetingID}} 모임의 정보를 수정한다.
    ```
    PUT /meeting/{meetingId}
@@ -99,7 +82,7 @@
       "participantsCount": 현재참석인원수
    }
    ```   
-4. 모임 참가
+5. 모임 참가
    - Description : 인증된 사용자가 모임에 참가한다.
    ```
    PUT /meeting/{meetingId}/entrance
@@ -115,7 +98,7 @@
       "participantsCount": 현재참석인원수 
    }
    ```   
-5. 참석자 출발지 목록
+6. 참석자 출발지 목록
    - Description : 참가자들의 출발지 목록을 조회한다.
    ```
    GET /meeting/{meetingId}/departures
@@ -126,7 +109,7 @@
    {  
       "participants":[
          {
-            "nick": 사용자 이름,
+            "username": 사용자 계정 아이디,
             "departure":{
                "id": 장소 id,
                "place_name": 장소명,
@@ -142,7 +125,7 @@
       ]
    }
    ```
-6. 모임 로그 조회 
+7. 모임 로그 조회 
    - Description : 모임의 전체 로그를 시간순으로 조회.
    ```
    GET /meeting/{meetingID}/log
@@ -167,14 +150,74 @@
       ]
    }
    ```
-7. 장소 제안
-   - Method : POST
-   - Path : /meeting/{meetingId}/proposal
-   - Header : 인가된 유저 토큰
-   - Request Body : {도착 장소, 참가자별 경로}
-   - Response : 성공 여부, 제안
-   - 인증 + 인가
-8. 계정 생성
+8. 제안 생성
+   - Description : 모임 장소를 제안한다.
+   ```
+   POST /meeting/{meetingId}/proposal
+   Authorization: Bearer {JWT}
+   ```
+   ```(json)
+   Request:
+   {
+      "destination":{
+         "name": 목적지 이름,
+         "lon":경도,
+         "lat: 위도
+      },
+      departures:[
+         {
+            "username": 사용자 계정 아이디,
+            "lon": 경도,
+            "lat": 위도
+         },
+         ...
+      ]
+   }
+   Response:
+   {  
+      "propsal_id": 제안 id,
+      "timestamp": 생성시간,
+      "update": 수정시간
+   }
+   ```
+9. 제안 조회
+   - Description : 다른 참가자의 제안을 확인한다.
+   ```
+   GET /meeting/{meetingId}/proposal/{proposalId}
+   Authorization: Bearer {JWT}
+   ```
+   ```(json)
+   Response:
+   {  
+      "proposer_nick": 제안한 사용자의 이름,
+      "destination":{
+         "name": 목적지 이름,
+         "lon":경도,
+         "lat: 위도
+      },
+      departures:[
+         {
+            "username": 사용자 계정 아이디,
+            "lon": 경도,
+            "lat": 위도
+         },
+         ...
+      ]
+   }
+   ```
+1. 제안 동의하기
+   - Description : 다른 참가자의 제안에 동의한다.
+   ```
+   PUT /meeting/{meetingId}/proposal/{proposalId}
+   Authorization: Bearer {JWT}
+   ```
+   ```(json)
+   Response:
+   {  
+      "success": true or false
+   }
+   ```
+10. 계정 생성
    - Description : 새로운 계정을 생성한다.
    ```
    POST /user
@@ -201,7 +244,7 @@
       "token": jwt 토큰 
    }
    ```
-9. 로그인
+11. 로그인
    - Description : 로그인한다.
    ```
    POST /login
@@ -217,15 +260,16 @@
    ```
 ---
 ## API Depth Table
-| depth 1 |      2      |      3     |        methods        |
-|:-------:|:-----------:|:----------:|:---------------------:|
-| meeting |             |            | GET(인증), POST(인증) |
-|         | {meetingId} |            | GET, PUT(인가)                   |
-|         |             | entrance   | PUT(인증)             |
-|         |             | departures | GET(인가)             |
-|         |             | log        | GET(인가)             |
-|         |             | proposal   | POST(인가)            |
-| user    |             |            | POST                  |
+| depth 1 |      2      |      3     |       4      |        methods        |
+|:-------:|:-----------:|:----------:|:------------:|:---------------------:|
+| meeting |             |            |              | GET(인증), POST(인증) |
+|         | {meetingId} |            |              | GET, PUT(인가)        |
+|         |             | entrance   |              | PUT(인증)             |
+|         |             | departures |              | GET(인가)             |
+|         |             | log        |              | GET(인가)             |
+|         |             | proposal   |              | POST(인가)            |
+|         |             |            | {proposalId} | GET(인가),PUT(인가)             |
+| user    |             |            |              | POST                  |
 
 ---
 
