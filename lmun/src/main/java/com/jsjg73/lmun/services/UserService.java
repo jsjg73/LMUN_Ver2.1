@@ -1,7 +1,5 @@
 package com.jsjg73.lmun.services;
 
-import java.util.Optional;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.jsjg73.lmun.dto.UserDto;
 import com.jsjg73.lmun.model.User;
 import com.jsjg73.lmun.repositories.UserRepository;
 
@@ -22,16 +21,17 @@ public class UserService implements UserDetailsService {
 	private UserRepository userRepository;
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException("Invalid Username"));
+		User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException("Invalid Username"));
+		return new UserDto(user);
 	}
 	
-	public void registry(User user) throws DuplicateKeyException{
-		
-		Optional<User> optional =userRepository.findById(user.getUsername());
-		
-		if(optional.isPresent())
+	public void registry(UserDto userDto) throws DuplicateKeyException{
+		if(isExistUser(userDto.getUsername()))
 			throw new DuplicateKeyException("Duplicated user ID");
 		
-		userRepository.save(user);
+		userRepository.save(userDto.toEntity());
+	}
+	private boolean isExistUser(String username) {
+		return userRepository.findById(username).isPresent();
 	}
 }

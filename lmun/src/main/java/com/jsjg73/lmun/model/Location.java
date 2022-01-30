@@ -1,6 +1,7 @@
 package com.jsjg73.lmun.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -8,7 +9,15 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Location {
 	@Id
 	private Long id;
@@ -21,9 +30,7 @@ public class Location {
 	
 	@ManyToMany(mappedBy = "departures", fetch = FetchType.LAZY)
 	private Set<User> users = new HashSet<>();
-	
-	public Location() {
-	}
+
 	public Location(Long id, String placeName, Double lon, Double lat, String addressName, String roadAddressName,
 			Category categoryGroupCode) {
 		super();
@@ -35,47 +42,6 @@ public class Location {
 		this.roadAddressName = roadAddressName;
 		this.categoryGroupCode = categoryGroupCode;
 	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getPlaceName() {
-		return placeName;
-	}
-	public void setPlaceName(String placeName) {
-		this.placeName = placeName;
-	}
-	public Double getLon() {
-		return lon;
-	}
-	public void setLon(Double lon) {
-		this.lon = lon;
-	}
-	public Double getLat() {
-		return lat;
-	}
-	public void setLat(Double lat) {
-		this.lat = lat;
-	}
-	public String getAddressName() {
-		return addressName;
-	}
-	public void setAddressName(String addressName) {
-		this.addressName = addressName;
-	}
-	public String getRoadAddressName() {
-		return roadAddressName;
-	}
-	public void setRoadAddressName(String roadAddressName) {
-		this.roadAddressName = roadAddressName;
-	}
-	public Category getCategoryGroupCode() {
-		return categoryGroupCode;
-	}
-	public void setCategoryGroupCode(Category categoryGroupCode) {
-		this.categoryGroupCode = categoryGroupCode;
-	}
+	
 	
 }
