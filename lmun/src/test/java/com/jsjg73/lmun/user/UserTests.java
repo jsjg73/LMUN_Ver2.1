@@ -10,26 +10,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import com.jsjg73.lmun.dto.AuthenticationRequest;
 import com.jsjg73.lmun.dto.LocationDto;
-import com.jsjg73.lmun.dto.LoginForm;
 import com.jsjg73.lmun.dto.UserDto;
+import com.jsjg73.lmun.exceptions.DuplicatedUsernameException;
 import com.jsjg73.lmun.exceptions.PasswordException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
@@ -135,7 +131,7 @@ public class UserTests {
 		.andExpect(status().is4xxClientError())
 		.andExpect(handler().handlerType(UserResource.class))
 		.andExpect(handler().methodName("registerUser"))
-		.andExpect(result-> assertInstanceOf(DuplicateKeyException.class, result.getResolvedException()))
+		.andExpect(result-> assertInstanceOf(DuplicatedUsernameException.class, result.getResolvedException()))
 		.andExpect(result->{
 			assertEquals("Duplicated user ID", result.getResolvedException().getMessage());
 		});
@@ -145,7 +141,7 @@ public class UserTests {
 	@Order(2)
 	@DisplayName("로그인 실패(잘못된 아이디)")
 	public void loginFailWrongUsername() throws Exception {
-		LoginForm loginForm = new LoginForm("wrongId", user.getPassword());
+		AuthenticationRequest loginForm = new AuthenticationRequest("wrongId", user.getPassword());
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String requestContent = null;
@@ -165,12 +161,11 @@ public class UserTests {
 				.content(requestContent)
 		).andDo(print())
 		.andExpect(status().is4xxClientError())
-		.andExpect(handler().handlerType(UserResource.class))
-		.andExpect(handler().methodName("loginUser"))
-		.andExpect(result-> assertInstanceOf(IllegalArgumentException.class, result.getResolvedException()))
-		.andExpect(result->{
-			assertEquals("Invalid Username/Password", result.getResolvedException().getMessage());
-		});
+		.andExpect(result -> assertEquals("Unauthorized", result.getResponse().getErrorMessage()));
+//		.andExpect(result-> assertInstanceOf(UsernameNotFoundException.class, result.getResolvedException()))
+//		.andExpect(result->{
+//			assertEquals("Username wrongId not found", result.getResolvedException().getMessage());
+//		});
 		
 	}
 
@@ -178,7 +173,7 @@ public class UserTests {
 	@Order(2)
 	@DisplayName("로그인 실패(잘못된 패스워드)")
 	public void loginFailWrongPassword() throws Exception {
-		LoginForm loginForm = new LoginForm(user.getUsername(), "wrongPassword");
+		AuthenticationRequest loginForm = new AuthenticationRequest(user.getUsername(), "wrongPassword");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String requestContent = null;
@@ -198,19 +193,18 @@ public class UserTests {
 				.content(requestContent)
 		).andDo(print())
 		.andExpect(status().is4xxClientError())
-		.andExpect(handler().handlerType(UserResource.class))
-		.andExpect(handler().methodName("loginUser"))
-		.andExpect(result-> assertInstanceOf(PasswordException.class, result.getResolvedException()))
-		.andExpect(result->{
-			assertEquals("Invalid Username/Password", result.getResolvedException().getMessage());
-		});
+		.andExpect(result -> assertEquals("Unauthorized", result.getResponse().getErrorMessage()));
+//		.andExpect(result-> assertInstanceOf(PasswordException.class, result.getResolvedException()))
+//		.andExpect(result->{
+//			assertEquals("Invalid Username/Password", result.getResolvedException().getMessage());
+//		});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("로그인 성공")
 	public void loginSuccess() throws Exception{
-		LoginForm loginForm = new LoginForm(user.getUsername(), user.getPassword());
+		AuthenticationRequest loginForm = new AuthenticationRequest(user.getUsername(), user.getPassword());
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String requestContent = null;
@@ -230,12 +224,11 @@ public class UserTests {
 				.content(requestContent)
 		).andDo(print())
 		.andExpect(status().isOk())
-		.andExpect(handler().handlerType(UserResource.class))
-		.andExpect(handler().methodName("loginUser"))
 		.andExpect(re->{
-			String localToken = JsonPath.read(re.getResponse().getContentAsString(), "$.token");
+			String localToken = re.getResponse().getHeader("Authorization");
+			localToken = jwtUtil.eliminatePrefix(localToken);
 			assertNotNull(localToken);
-//			assertEquals(user.getUsername(), JwtUtil.decode(localToken).getSubject());
+			assertEquals(user.getUsername(), jwtUtil.extractUsername(localToken));
 		});
 		
 		

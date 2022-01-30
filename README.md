@@ -321,7 +321,7 @@ link :  [api상세.md](documents/api상세.md)
 | depth 1 |      2      |      3     |       4      |        methods        |
 |:-------:|:-----------:|:----------:|:------------:|:---------------------:|
 | meeting |             |            |              | GET(인증), POST(인증) |
-|         | {meetingId} |            |              | GET, PUT(인가)        |
+|         | {meetingId} |            |              | GET(인증), PUT(인가)        |
 |         |             | entrance   |              | PUT(인증)             |
 |         |             | departures |              | GET(인가)             |
 |         |             | log        |              | GET(인가)             |

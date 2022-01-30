@@ -1,8 +1,10 @@
 package com.jsjg73.lmun.dto;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 import org.springframework.security.core.GrantedAuthority;
@@ -32,11 +34,11 @@ public class UserDto implements UserDetails{
 		this.departures = departures;
 	}
 	
-	private boolean isAccountNonExpired;
-	private boolean isAccountNonLocked;
-	private boolean isCredentialsNonExpired;
-	private boolean isEnabled;
-	private Set<? extends GrantedAuthority> grantedAuthorities;
+	private boolean isAccountNonExpired=true;
+	private boolean isAccountNonLocked=true;
+	private boolean isCredentialsNonExpired=true;
+	private boolean isEnabled=true;
+	private Set<? extends GrantedAuthority> grantedAuthorities=new HashSet<>();
 	
 	@Override
 	@JsonIgnore
@@ -86,11 +88,11 @@ public class UserDto implements UserDetails{
 		this.username = user.getUsername();
 		this.password= user.getPassword();
 		this.nick=user.getNick();
-		this.departures =user.getDepartures().stream().map(each->new LocationDto(each)).toList();
+		this.departures =user.getDepartures().stream().map(each->new LocationDto(each)).collect(Collectors.toList());
 	}
 
 	public User toEntity() {
-		return new User(username, password, nick, departures.stream().map(LocationDto::toEntity).toList());
+		return new User(username, password, nick, departures.stream().map(LocationDto::toEntity).collect(Collectors.toList()));
 	}
 
 }

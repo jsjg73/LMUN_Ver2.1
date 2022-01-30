@@ -1,21 +1,27 @@
 package com.jsjg73.lmun.jwt;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;import javax.crypto.SecretKey;
+import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
+import javax.crypto.SecretKey;
 
 @Service
 public class JwtUtil {
-	private final String SECRET_KEY ="keymustbelongenoughbutthiskeyistoshortkeymustbelongenoughbutthiskeyistoshortkeymustbelongenoughbutthiskeyistoshort";
-	
+	@Autowired
+	JwtConfig jwtConfig;
+	@Autowired
+	SecretKey secretKey;
+
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
@@ -29,7 +35,7 @@ public class JwtUtil {
 	}
 
 	private Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 	}
 	
 	private Boolean isTokenExpired(String token) {
@@ -40,14 +46,21 @@ public class JwtUtil {
 		Map<String, Object> claims = new HashMap<>();
 		return createToken(claims, userDetails.getUsername());
 	}
+	public String generateToken(String subject){
+		Map<String, Object> claims = new HashMap<>();
+		return createToken(claims, subject);
+	}
 	private String createToken(Map<String, Object> claims, String subject) {
 		return Jwts.builder().setClaims(claims).setSubject(subject)
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis()+1000*60*60*10))
-				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+				.setIssuedAt(new Date())
+				.setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+				.signWith(secretKey).compact();
 	}
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+	}
+	public String eliminatePrefix(String token){
+		return token.substring(7);
 	}
 }

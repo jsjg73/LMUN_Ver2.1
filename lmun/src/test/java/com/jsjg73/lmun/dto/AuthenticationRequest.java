@@ -1,10 +1,9 @@
 package com.jsjg73.lmun.dto;
 
-public class LoginForm {
+public class AuthenticationRequest {
 	String username;
 	String password;
-	public LoginForm(String username, String password) {
-		super();
+	public AuthenticationRequest(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
