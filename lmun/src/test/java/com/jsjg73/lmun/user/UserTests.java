@@ -26,7 +26,6 @@ import com.jsjg73.lmun.dto.AuthenticationRequest;
 import com.jsjg73.lmun.dto.LocationDto;
 import com.jsjg73.lmun.dto.UserDto;
 import com.jsjg73.lmun.exceptions.DuplicatedUsernameException;
-import com.jsjg73.lmun.exceptions.PasswordException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.resources.UserResource;
@@ -39,7 +38,7 @@ public class UserTests {
 	MockMvc mockMvc;
 	@Autowired
 	JwtUtil jwtUtil;
-	
+
 	static LocationDto departure;
 	static UserDto user;
 

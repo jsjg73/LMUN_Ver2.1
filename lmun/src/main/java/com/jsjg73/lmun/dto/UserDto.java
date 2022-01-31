@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+import com.jsjg73.lmun.model.Meeting;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,7 +26,7 @@ public class UserDto implements UserDetails{
 	private String password;
 	private String nick;
 	private List<LocationDto> departures;
-	
+	private List<MeetingDto> meetings;
 
 	public UserDto(String username, String password, String nick, List<LocationDto> departures) {
 		this.username = username;
@@ -92,7 +93,10 @@ public class UserDto implements UserDetails{
 	}
 
 	public User toEntity() {
-		return new User(username, password, nick, departures.stream().map(LocationDto::toEntity).collect(Collectors.toList()));
+		return new User(username, password, nick,
+				departures.stream().map(LocationDto::toEntity).collect(Collectors.toList())
+//				,meetings.stream().map(MeetingDto::toEntity).collect(Collectors.toList())
+		);
 	}
 
 }
