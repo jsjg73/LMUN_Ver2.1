@@ -1,21 +1,16 @@
 package com.jsjg73.lmun.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthenticationResponse {
-	private String token;
+	private Boolean success;
+	private String message;
 
-	public AuthenticationResponse() {
-	}
-	public AuthenticationResponse(String token) {
-		super();
-		this.token = token;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-	
 }

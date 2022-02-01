@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.jsjg73.lmun.repositories.UserRepository;
+import com.jsjg73.lmun.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,8 @@ public class JwtUtil {
 	JwtConfig jwtConfig;
 	@Autowired
 	SecretKey secretKey;
-
+	@Autowired
+	UserService userService;
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
@@ -42,16 +46,27 @@ public class JwtUtil {
 		return extractExpiration(token).before(new Date());
 	}
 	
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(Authentication authentication) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, userDetails.getUsername());
+		return createToken(claims, authentication);
 	}
-	public String generateToken(String subject){
+	public String generateToken(String username) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, subject);
+		UserDetails userDetails = userService.loadUserByUsername(username);
+		return createToken(claims, userDetails);
 	}
-	private String createToken(Map<String, Object> claims, String subject) {
-		return Jwts.builder().setClaims(claims).setSubject(subject)
+	private String createToken(Map<String, Object> claims, Authentication authentication) {
+		return Jwts.builder().setClaims(claims)
+				.setSubject(authentication.getName())
+				.claim("authorities", authentication.getAuthorities())
+				.setIssuedAt(new Date())
+				.setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+				.signWith(secretKey).compact();
+	}
+	private String createToken(Map<String, Object> claims, UserDetails userDetails) {
+		return Jwts.builder().setClaims(claims)
+				.setSubject(userDetails.getUsername())
+				.claim("authorities", userDetails.getAuthorities())
 				.setIssuedAt(new Date())
 				.setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
 				.signWith(secretKey).compact();

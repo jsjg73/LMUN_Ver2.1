@@ -1,7 +1,10 @@
 package com.jsjg73.lmun.jwt;
 
+import com.google.common.base.Function;
 import com.google.common.base.Strings;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
@@ -34,12 +40,21 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             return;
         }
         String token = jwtUtil.eliminatePrefix(authorizationHeader);
+
+        List<Map<String, String>> authorities
+                = jwtUtil.extractClaim(
+                        token,
+                        body->(List<Map<String, String>>) body.get("authorities"));
+
+        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
+                .map(m -> new SimpleGrantedAuthority(m.get("authority")))
+                .collect(Collectors.toSet());
         try{
             String username = jwtUtil.extractUsername(token);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                    new HashSet<SimpleGrantedAuthority>()
+                    simpleGrantedAuthorities
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

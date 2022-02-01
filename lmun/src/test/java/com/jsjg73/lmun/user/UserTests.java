@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
@@ -96,13 +95,8 @@ public class UserTests {
 				
 		).andDo(print())
 		.andExpect(status().isCreated())
-		.andExpect(re->{
-			token = JsonPath.read(re.getResponse().getContentAsString(), "$.token");
-		});
-		
-		assertNotNull(token);
-		
-		assertEquals(user.getUsername(), jwtUtil.extractUsername(token));
+		.andExpect(jsonPath("$.success").value(true))
+		.andExpect(jsonPath("$.message").value("유저 생성 성공"));
 	}
 
 	@Test

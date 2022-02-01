@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 			.addFilter(jwtAuthenticationFilter())
-			.addFilterAfter(new JwtTokenVerifier(jwtUtil, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
+			.addFilterAfter(jwtTokenVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
 			.authorizeRequests()
 			.antMatchers("/","/user","/user/login").permitAll()
 			.anyRequest().authenticated();
@@ -65,5 +65,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtUtil, jwtConfig);
 		filter.setFilterProcessesUrl("/user/login");
 		return filter;
+	}
+
+	private JwtTokenVerifier jwtTokenVerifier(){
+		return new JwtTokenVerifier(jwtUtil, jwtConfig);
 	}
 }

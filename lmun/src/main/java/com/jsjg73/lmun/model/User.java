@@ -29,7 +29,7 @@ public class User {
 	@JoinTable(name = "USER_DEPARTURES", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID", referencedColumnName = "ID"))
 	private List<Location> departures = new ArrayList<Location>();
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Participant> meetings=new ArrayList<>();
 
 	public User(String username, String password, String nick) {

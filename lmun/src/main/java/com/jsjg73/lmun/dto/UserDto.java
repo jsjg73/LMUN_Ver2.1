@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.jsjg73.lmun.model.Meeting;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -90,5 +91,16 @@ public class UserDto implements UserDetails{
 		this.password= user.getPassword();
 		this.nick=user.getNick();
 		this.departures =user.getDepartures().stream().map(each->new LocationDto(each)).collect(Collectors.toList());
+		this.meetings = user.getMeetings().stream().map(m->new MeetingDto(m.getMeeting())).collect(Collectors.toList());
+
+		this.grantedAuthorities= meetings.stream().map(m->{
+			String authority = null;
+			if(m.getHost().equals(this.username)){
+				authority = String.format("%s:HOST", m.id);
+			}else{
+				authority = String.format("%s:GUEST", m.id);
+			}
+			return new SimpleGrantedAuthority(authority);
+		}).collect(Collectors.toSet());
 	}
 }

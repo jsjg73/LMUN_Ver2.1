@@ -10,3 +10,5 @@ insert into user_departures (user_id, location_id) values ('user2', 131213);
 insert into user_departures (user_id, location_id) values ('user3', 131213);
 
 insert into meeting (id, name, at_least, host) values ('abcdefghijklm', '모임 이름', 3, 'user1');
+
+insert into participant (meeting_id, username) value ('abcdefghijklm', 'user1');

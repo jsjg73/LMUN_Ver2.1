@@ -28,7 +28,6 @@ public class UserResource {
 		Objects.nonNull(userDto);
 		Objects.nonNull(userDto.getUsername());
 		userService.registry(userDto);
-		String token = jwtUtil.generateToken(userService.loadUserByUsername(userDto.getUsername()));
-		return new ResponseEntity<>(new AuthenticationResponse(token), HttpStatus.CREATED);
+		return new ResponseEntity<>(new AuthenticationResponse(true, "유저 생성 성공"), HttpStatus.CREATED);
 	}
 }
