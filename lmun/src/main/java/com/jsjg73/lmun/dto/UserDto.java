@@ -91,12 +91,4 @@ public class UserDto implements UserDetails{
 		this.nick=user.getNick();
 		this.departures =user.getDepartures().stream().map(each->new LocationDto(each)).collect(Collectors.toList());
 	}
-
-	public User toEntity() {
-		return new User(username, password, nick,
-				departures.stream().map(LocationDto::toEntity).collect(Collectors.toList())
-//				,meetings.stream().map(MeetingDto::toEntity).collect(Collectors.toList())
-		);
-	}
-
 }

@@ -1,6 +1,7 @@
 package com.jsjg73.lmun.security;
 
 import com.jsjg73.lmun.jwt.JwtConfig;
+import com.jsjg73.lmun.jwt.JwtTokenVerifier;
 import com.jsjg73.lmun.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.services.UserService;
@@ -41,9 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 			.addFilter(jwtAuthenticationFilter())
+			.addFilterAfter(new JwtTokenVerifier(jwtUtil, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
 			.authorizeRequests()
 			.antMatchers("/","/user","/user/login").permitAll()
-			.antMatchers(HttpMethod.GET, "/meeting/{meetingId}").permitAll()
 			.anyRequest().authenticated();
 	}
 
