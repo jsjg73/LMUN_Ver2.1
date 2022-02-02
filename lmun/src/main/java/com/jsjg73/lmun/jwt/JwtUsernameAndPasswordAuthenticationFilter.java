@@ -2,7 +2,6 @@ package com.jsjg73.lmun.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsjg73.lmun.dto.UserDto;
-import com.jsjg73.lmun.exceptions.InvalidAuthenticationRequestException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,7 +39,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             Authentication authenticate = authenticationManager.authenticate(authentication);
             return authenticate;
         } catch (IOException e) {
-            throw new InvalidAuthenticationRequestException("Invalid Auth Request");
+            throw new RuntimeException("Invalid Auth Request");
         }
     }
 

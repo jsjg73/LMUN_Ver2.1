@@ -24,7 +24,7 @@ public class User {
 	private String password;
 	private String nick;
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-	private List<Departure> departures = new ArrayList<Departure>();
+	private List<Departure> departures = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Participant> meetings=new ArrayList<>();

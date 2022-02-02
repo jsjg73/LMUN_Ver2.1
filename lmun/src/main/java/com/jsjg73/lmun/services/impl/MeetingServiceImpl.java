@@ -2,6 +2,7 @@ package com.jsjg73.lmun.services.impl;
 
 import com.jsjg73.lmun.dto.MeetingDto;
 import com.jsjg73.lmun.dto.MeetingParticipantsDto;
+import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.model.Meeting;
 import com.jsjg73.lmun.model.manytomany.Participant;
 import com.jsjg73.lmun.model.User;
@@ -40,11 +41,24 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public MeetingParticipantsDto getMeetingById(String meetingId) {
-        Meeting meeting = meetingRepository
-                .findById(meetingId)
-                .orElseThrow(()->
-                        new UsernameNotFoundException(String.format("Meeting %s not found", meetingId)));
-
+        Meeting meeting = findById(meetingId);
         return new MeetingParticipantsDto(meeting);
+    }
+
+    @Override
+    public Boolean update(String meetingId, MeetingDto meetingDto) {
+        Meeting meeting = findById(meetingId);
+        meeting.setName(meetingDto.getName());
+        meeting.setAtLeast(meetingDto.getAtLeast());
+
+        meetingRepository.save(meeting);
+        return true;
+    }
+
+    private Meeting findById(String id){
+        return meetingRepository
+                .findById(id)
+                .orElseThrow(()->
+                        new MeetingNotFoundException(String.format("MeetingId %s not found", id)));
     }
 }

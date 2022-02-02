@@ -3,8 +3,10 @@ package com.jsjg73.lmun.jwt;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.jsjg73.lmun.repositories.UserRepository;
 import com.jsjg73.lmun.services.UserService;
@@ -32,7 +34,11 @@ public class JwtUtil {
 	public Date extractExpiration(String token) {
 		return extractClaim(token, Claims::getExpiration);
 	}
-
+	public List<String> extractAuthorities(String token){
+		final Claims claims = extractAllClaims(token);
+		List<Map<String,String>> authorities = (List<Map<String,String>>) claims.get("authorities");
+		return authorities.stream().map(map->map.get("authority")).collect(Collectors.toList());
+	}
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);

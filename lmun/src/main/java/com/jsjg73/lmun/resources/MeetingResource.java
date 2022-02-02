@@ -8,6 +8,7 @@ import com.jsjg73.lmun.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,14 @@ public class MeetingResource {
 
     @GetMapping("/{meetingId}")
     public ResponseEntity<MeetingParticipantsDto> getMeetingById(@PathVariable("meetingId") String meetingId){
+        return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{meetingId}")
+//    @PreAuthorize("@meetingSecurityChecker.checkerHost(authentication, #meetingId)")
+    public ResponseEntity<MeetingDto> updateMeeting(@PathVariable("meetingId") String meetingId, @RequestBody MeetingDto meetingDto){
+        meetingService.update(meetingId, meetingDto);
+
         return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private JwtConfig jwtConfig;
@@ -45,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.addFilterAfter(jwtTokenVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
 			.authorizeRequests()
 			.antMatchers("/","/user","/user/login").permitAll()
+			.antMatchers(HttpMethod.PUT,"/meeting/{meetingId}").access("@meetingSecurityChecker.checkerHost(authentication, #meetingId)")
 			.anyRequest().authenticated();
 	}
 
@@ -69,5 +73,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private JwtTokenVerifier jwtTokenVerifier(){
 		return new JwtTokenVerifier(jwtUtil, jwtConfig);
+	}
+
+	@Bean
+	public MeetingSecurityChecker meetingSecurityChecker(){
+		return new MeetingSecurityChecker();
 	}
 }

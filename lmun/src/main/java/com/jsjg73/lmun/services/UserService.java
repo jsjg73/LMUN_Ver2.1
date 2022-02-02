@@ -3,7 +3,9 @@ package com.jsjg73.lmun.services;
 import javax.transaction.Transactional;
 
 import com.jsjg73.lmun.dto.LocationDto;
+import com.jsjg73.lmun.model.Location;
 import com.jsjg73.lmun.model.manytomany.Departure;
+import com.jsjg73.lmun.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,8 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private LocationRepository locationRepository;
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,10 +48,15 @@ public class UserService implements UserDetailsService {
 		user.setUsername(userDto.getUsername());
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		user.setNick(userDto.getNick());
+
 		List<Departure> departures = userDto.getDepartures()
 				.stream()
 				.map(
-					locationDto-> new Departure(user, locationDto.toEntity())
+					locationDto-> {
+						Location location = locationDto.toEntity();
+						locationRepository.save(location);
+						return new Departure(user, location);
+					}
 				).collect(Collectors.toList());
 		user.setDepartures(	departures );
 

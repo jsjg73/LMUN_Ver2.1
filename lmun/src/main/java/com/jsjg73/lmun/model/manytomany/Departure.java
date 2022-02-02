@@ -22,7 +22,7 @@ public class Departure {
     @JoinColumn(name = "username")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -30,4 +30,5 @@ public class Departure {
         this.user = user;
         this.location = location;
     }
+
 }
