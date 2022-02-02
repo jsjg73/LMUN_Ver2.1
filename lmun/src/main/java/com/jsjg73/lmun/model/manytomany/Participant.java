@@ -1,5 +1,8 @@
-package com.jsjg73.lmun.model;
+package com.jsjg73.lmun.model.manytomany;
 
+import com.jsjg73.lmun.model.Location;
+import com.jsjg73.lmun.model.Meeting;
+import com.jsjg73.lmun.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,8 +25,13 @@ public class Participant {
     @JoinColumn(name = "username")
     private User user;
 
-    public Participant(Meeting meeting, User host) {
+    @OneToOne
+    @JoinColumn(name="departure_id")
+    private Location departure;
+
+    public Participant(Meeting meeting, User host, Location departure) {
         this.meeting=meeting;
         this.user=host;
+        this.departure=departure;
     }
 }

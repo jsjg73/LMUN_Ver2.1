@@ -4,11 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 
+import com.jsjg73.lmun.model.manytomany.Departure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +26,8 @@ public class Location {
 	private String roadAddressName;
 	private Category categoryGroupCode;
 	
-	@ManyToMany(mappedBy = "departures", fetch = FetchType.LAZY)
-	private Set<User> users = new HashSet<>();
+	@OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+	private Set<Departure> users = new HashSet<>();
 
 	public Location(Long id, String placeName, Double lon, Double lat, String addressName, String roadAddressName,
 			Category categoryGroupCode) {

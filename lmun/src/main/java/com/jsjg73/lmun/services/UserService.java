@@ -3,6 +3,7 @@ package com.jsjg73.lmun.services;
 import javax.transaction.Transactional;
 
 import com.jsjg73.lmun.dto.LocationDto;
+import com.jsjg73.lmun.model.manytomany.Departure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import com.jsjg73.lmun.exceptions.DuplicatedUsernameException;
 import com.jsjg73.lmun.model.User;
 import com.jsjg73.lmun.repositories.UserRepository;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,9 +44,12 @@ public class UserService implements UserDetailsService {
 		user.setUsername(userDto.getUsername());
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		user.setNick(userDto.getNick());
-		user.setDepartures(
-				userDto.getDepartures().stream().map(LocationDto::toEntity).collect(Collectors.toList())
-		);
+		List<Departure> departures = userDto.getDepartures()
+				.stream()
+				.map(
+					locationDto-> new Departure(user, locationDto.toEntity())
+				).collect(Collectors.toList());
+		user.setDepartures(	departures );
 
 		userRepository.save(user);
 	}

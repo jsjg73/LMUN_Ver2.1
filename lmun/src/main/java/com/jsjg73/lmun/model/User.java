@@ -1,14 +1,12 @@
 package com.jsjg73.lmun.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.*;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.jsjg73.lmun.model.manytomany.Departure;
+import com.jsjg73.lmun.model.manytomany.Participant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,9 +23,8 @@ public class User {
 	private String username;
 	private String password;
 	private String nick;
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "USER_DEPARTURES", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID", referencedColumnName = "ID"))
-	private List<Location> departures = new ArrayList<Location>();
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	private List<Departure> departures = new ArrayList<Departure>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Participant> meetings=new ArrayList<>();
@@ -39,4 +36,7 @@ public class User {
 		this.nick = nick;
 	}
 
+	public Location getDefaultDeparture(){
+		return departures.get(0).getLocation();
+	}
 }

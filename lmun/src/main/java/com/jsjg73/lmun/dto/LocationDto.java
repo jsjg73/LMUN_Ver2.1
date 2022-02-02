@@ -3,6 +3,7 @@ package com.jsjg73.lmun.dto;
 import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.model.Location;
 
+import com.jsjg73.lmun.model.manytomany.Departure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ public class LocationDto {
 	private String roadAddressName;
 	private Category categoryGroupCode;
 	
-	public LocationDto(Location location) {
+	public LocationDto(Departure departure) {
+		Location location = departure.getLocation();
 		this.id=location.getId();
 		this.placeName=location.getPlaceName();
 		this.lon=location.getLon();
@@ -28,7 +30,6 @@ public class LocationDto {
 		this.roadAddressName=location.getRoadAddressName();
 		this.categoryGroupCode=location.getCategoryGroupCode();
 	}
-	
 	public Location toEntity() {
 		return new Location(id, placeName, lon, lat, addressName, roadAddressName, categoryGroupCode);
 	}

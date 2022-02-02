@@ -89,13 +89,14 @@ link :  [api상세.md](documents/api상세.md)
       "atLeast": 최소 인원수
    }
    Response:
-   {  
-      "id": 모임 id,
-      "name": 모임 이름,
-      "host": 관리자 이름,
-      "atLeast": 최소인원,
-      "participantsCount": 현재참석인원수
-   }
+      Header:{갱신된 토큰(추가된 모임의 권한 추가)},
+      body:{  
+         "id": 모임 id,
+         "name": 모임 이름,
+         "host": 관리자 이름,
+         "atLeast": 최소인원,
+         "participantsCount": 현재참석인원수
+      }
    ```
 3. 모임 조회 
    - Description : 모임 ID로 단일 모임 조회한다.

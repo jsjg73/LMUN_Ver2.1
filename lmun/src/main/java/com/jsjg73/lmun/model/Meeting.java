@@ -1,6 +1,6 @@
 package com.jsjg73.lmun.model;
 
-import lombok.AllArgsConstructor;
+import com.jsjg73.lmun.model.manytomany.Participant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,13 +22,13 @@ public class Meeting {
 
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "host")
     private User host;
 
     private Integer atLeast;
 
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<Participant> participants = new ArrayList<>();
 
     public Meeting(String name, User host, Integer atLeast) {

@@ -1,7 +1,6 @@
 package com.jsjg73.lmun.dto;
 
 import com.jsjg73.lmun.model.Meeting;
-import com.jsjg73.lmun.model.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

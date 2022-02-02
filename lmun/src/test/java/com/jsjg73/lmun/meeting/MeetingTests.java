@@ -3,6 +3,7 @@ package com.jsjg73.lmun.meeting;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import com.jsjg73.lmun.config.UTF8MockMvc;
 import com.jsjg73.lmun.dto.AuthenticationRequest;
 import com.jsjg73.lmun.dto.LocationDto;
 import com.jsjg73.lmun.dto.UserDto;
@@ -28,65 +29,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@UTF8MockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Sql("classpath:/test/meeting/data.sql")
 @Transactional
 public class MeetingTests {
     @Autowired
     MockMvc mockMvc;
-    static LocationDto departure;
-    static MeetingRequest meetingRequest;
-    static AuthenticationRequest authenticationRequest;
+    static LocationDto departure= new LocationDto(131213L,"장소 이름",1.1, 3.3,"지번 주소", "도로명 주소", Category.PM9);
+    static MeetingRequest meetingRequest= new MeetingRequest("Math Study", 3);;
+    static AuthenticationRequest authenticationRequest=new AuthenticationRequest("user1", "password");;
     private static String token ;
 
     private String meetingId;
     @Autowired
     private JwtUtil jwtUtil;
-
-    @BeforeAll
-
-    public static void beforeAll() {
-
-        departure = new LocationDto(131213L,"장소 이름",1.1, 3.3,"지번 주소", "도로명 주소", Category.PM9);
-        List<LocationDto> list = List.of(departure);
-
-        authenticationRequest =new AuthenticationRequest("user1", "password");
-
-        meetingRequest = new MeetingRequest("Math Study", 3);
-    }
-    @Test
-    @Order(1)
-    @DisplayName("계정 생성 성공")
-    @Disabled
-    public void createUserSuccess() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        String requestContent = null;
-        try {
-            requestContent = mapper.writeValueAsString(authenticationRequest);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            fail();
-        }
-        assertNotNull(requestContent);
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.
-                                post("/user")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .content(requestContent)
-
-                ).andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(re->{
-                    token = JsonPath.read(re.getResponse().getContentAsString(), "$.token");
-                });
-
-        assertNotNull(token);
-
-//        assertEquals(user.getUsername(), jwtUtil.extractUsername(token));
-    }
 
     @Test
     @Order(1)
@@ -156,13 +113,16 @@ public class MeetingTests {
     @Test
     @Order(3)
     @DisplayName("모임 단일 조회 성공")
-    @Disabled
+//    @Disabled
     public void getMeetingByIdSuccess() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .get("/meeting/abcdefghijklm")
                                 .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer "+token)
                 ).andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(handler().handlerType(MeetingResource.class))
                 .andExpect(handler().methodName("getMeetingById"))
                 .andExpect(jsonPath("$.id").value("abcdefghijklm"))
@@ -170,9 +130,9 @@ public class MeetingTests {
                 .andExpect(jsonPath("$.host").value("user1"))
                 .andExpect(jsonPath("$.atLeast").value(3))
                 .andExpect(jsonPath("$.participantsCount").value(3))
-                .andExpect(jsonPath("$.participants[0]").value("user1"))
-                .andExpect(jsonPath("$.participants[1]").value("user2"))
-                .andExpect(jsonPath("$.participants[2]").value("user3"));
+                .andExpect(jsonPath("$.participants[0]").value("nick1"))
+                .andExpect(jsonPath("$.participants[1]").value("nick2"))
+                .andExpect(jsonPath("$.participants[2]").value("nick3"));
 
     }
 }
