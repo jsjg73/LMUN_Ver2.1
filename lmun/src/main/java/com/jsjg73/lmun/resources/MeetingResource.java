@@ -45,4 +45,10 @@ public class MeetingResource {
 
         return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
     }
+
+    @PutMapping("/{meetingId}/participation")
+    public ResponseEntity<MeetingDto> participateMeeting( @PathVariable("meetingId") String meetingId,Authentication authentication){
+        meetingService.participate(meetingId, authentication.getName());
+        return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
+    }
 }

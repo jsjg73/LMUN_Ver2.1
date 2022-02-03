@@ -2,6 +2,7 @@ package com.jsjg73.lmun.services.impl;
 
 import com.jsjg73.lmun.dto.MeetingDto;
 import com.jsjg73.lmun.dto.MeetingParticipantsDto;
+import com.jsjg73.lmun.exceptions.AlreadyParticipationException;
 import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.model.Meeting;
 import com.jsjg73.lmun.model.manytomany.Participant;
@@ -53,6 +54,20 @@ public class MeetingServiceImpl implements MeetingService {
 
         meetingRepository.save(meeting);
         return true;
+    }
+
+    @Override
+    public void participate(String meetingId, String username) {
+        User user = userRepository.findById(username).orElseThrow(()->
+                new UsernameNotFoundException(String.format("Username %s not found", username)));
+        Meeting meeting = findById(meetingId);
+        if( meeting.containsUser(user) ){
+            throw new AlreadyParticipationException(meetingId+" already in attendance.");
+        }
+        Participant participant = new Participant(meeting, user, user.getDefaultDeparture());
+        user.getMeetings().add(participant);
+        meeting.getParticipants().add(participant);
+        participatingRepository.save(participant);
     }
 
     private Meeting findById(String id){

@@ -37,4 +37,7 @@ public class Meeting {
         this.atLeast = atLeast;
     }
 
+    public boolean containsUser(User user) {
+        return participants.stream().filter(participant -> participant.getUser().equals(user)).count() == 1;
+    }
 }

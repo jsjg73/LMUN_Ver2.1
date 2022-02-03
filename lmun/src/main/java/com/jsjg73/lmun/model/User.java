@@ -2,6 +2,7 @@ package com.jsjg73.lmun.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 
@@ -38,5 +39,20 @@ public class User {
 
 	public Location getDefaultDeparture(){
 		return departures.get(0).getLocation();
+	}
+
+	@Override
+	public int hashCode() {
+		return username.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		if (o == null || !(o instanceof User))
+			return false;
+		User other = (User) o;
+		return Objects.equals(username, other.username);
 	}
 }
