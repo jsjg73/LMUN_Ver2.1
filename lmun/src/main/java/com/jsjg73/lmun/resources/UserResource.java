@@ -2,6 +2,7 @@ package com.jsjg73.lmun.resources;
 
 import java.util.Objects;
 
+import com.jsjg73.lmun.dto.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,8 @@ public class UserResource {
 	@Autowired JwtUtil jwtUtil;
 	
 	@PostMapping
-	public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserDto userDto){
-		Objects.nonNull(userDto);
-		Objects.nonNull(userDto.getUsername());
-		userService.registry(userDto);
+	public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserRequest	userRequest){
+		userService.registry(userRequest);
 		return new ResponseEntity<>(new AuthenticationResponse(true, "유저 생성 성공"), HttpStatus.CREATED);
 	}
 }

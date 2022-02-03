@@ -31,6 +31,12 @@ public class LocationDto {
 		this.categoryGroupCode=location.getCategoryGroupCode();
 	}
 	public Location toEntity() {
-		return new Location(id, placeName, lon, lat, addressName, roadAddressName, categoryGroupCode);
+		return Location.builder()
+				.id(id)
+				.placeName(placeName)
+				.lon(lon).lat(lat)
+				.addressName(addressName).roadAddressName(roadAddressName)
+				.categoryGroupCode(categoryGroupCode)
+				.build();
 	}
 }

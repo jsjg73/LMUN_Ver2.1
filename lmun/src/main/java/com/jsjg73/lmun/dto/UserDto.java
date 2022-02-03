@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 
 import com.jsjg73.lmun.model.Meeting;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,27 +16,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jsjg73.lmun.model.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserDto implements UserDetails{
 	private String username;
 	private String password;
 	private String nick;
-	private List<LocationDto> departures;
-	private List<MeetingDto> meetings;
 
-	public UserDto(String username, String password, String nick, List<LocationDto> departures) {
-		this.username = username;
-		this.password = password;
-		this.nick = nick;
-		this.departures = departures;
-	}
-	
 	private boolean isAccountNonExpired=true;
 	private boolean isAccountNonLocked=true;
 	private boolean isCredentialsNonExpired=true;
@@ -86,21 +76,4 @@ public class UserDto implements UserDetails{
 		return isEnabled;
 	}
 
-	public UserDto(User user) {
-		this.username = user.getUsername();
-		this.password= user.getPassword();
-		this.nick=user.getNick();
-		this.departures =user.getDepartures().stream().map(each->new LocationDto(each)).collect(Collectors.toList());
-		this.meetings = user.getMeetings().stream().map(m->new MeetingDto(m.getMeeting())).collect(Collectors.toList());
-
-		this.grantedAuthorities= meetings.stream().map(m->{
-			String authority = null;
-			if(m.getHost().equals(this.username)){
-				authority = String.format("%s:HOST", m.id);
-			}else{
-				authority = String.format("%s:GUEST", m.id);
-			}
-			return new SimpleGrantedAuthority(authority);
-		}).collect(Collectors.toSet());
-	}
 }

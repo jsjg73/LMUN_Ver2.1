@@ -1,19 +1,18 @@
 package com.jsjg73.lmun.model;
 
 import com.jsjg73.lmun.model.manytomany.Participant;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Meeting {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -28,8 +27,8 @@ public class Meeting {
 
     private Integer atLeast;
 
-    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
-    private List<Participant> participants = new ArrayList<>();
+    @OneToMany(mappedBy = "meeting")
+    private Set<Participant> participants;
 
     public Meeting(String name, User host, Integer atLeast) {
         this.name = name;

@@ -3,11 +3,14 @@ package com.jsjg73.lmun.services;
 import javax.transaction.Transactional;
 
 import com.jsjg73.lmun.dto.LocationDto;
+import com.jsjg73.lmun.dto.UserRequest;
 import com.jsjg73.lmun.model.Location;
+import com.jsjg73.lmun.model.Meeting;
 import com.jsjg73.lmun.model.manytomany.Departure;
 import com.jsjg73.lmun.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +23,9 @@ import com.jsjg73.lmun.model.User;
 import com.jsjg73.lmun.repositories.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -38,18 +43,30 @@ public class UserService implements UserDetailsService {
 				.findById(username)
 				.orElseThrow(()->
 						new UsernameNotFoundException(String.format("Username %s not found", username)));
-		return new UserDto(user);
+
+		return UserDto.builder()
+				.username(user.getUsername())
+				.nick(user.getNick())
+				.password(user.getPassword())
+				 .grantedAuthorities(user.getAuthorities())
+				.isAccountNonLocked(true)
+				.isEnabled(true)
+				.isCredentialsNonExpired(true)
+				.isAccountNonExpired(true)
+				 .build();
+
 	}
 	
-	public void registry(UserDto userDto) throws DuplicateKeyException{
-		if(isExistUser(userDto.getUsername()))
+	public void registry(UserRequest userRequest) throws DuplicateKeyException{
+		if(isExistUser(userRequest.getUsername()))
 			throw new DuplicatedUsernameException("Duplicated user ID");
-		User user = new User();
-		user.setUsername(userDto.getUsername());
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		user.setNick(userDto.getNick());
 
-		List<Departure> departures = userDto.getDepartures()
+		User user = User.builder()
+				.username(userRequest.getUsername())
+				.password(passwordEncoder.encode(userRequest.getPassword()))
+				.nick(userRequest.getNick())
+				.build();
+		List<Departure> departures = userRequest.getDepartures()
 				.stream()
 				.map(
 					locationDto-> {

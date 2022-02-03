@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import com.jsjg73.lmun.dto.UserRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,7 +40,7 @@ public class UserTests {
 	JwtUtil jwtUtil;
 
 	static LocationDto departure;
-	static UserDto user;
+	static UserRequest user;
 
 	private String token;
 	
@@ -50,8 +51,13 @@ public class UserTests {
 				127.05897078335246, 37.506051888130386, 
 				"서울 강남구 대치동 943-16", "서울 강남구 테헤란로84길 17", Category.PM9);
 		List<LocationDto> list = List.of(departure);
-
-		user =new UserDto("jsjg73", "password", "김제궁", list);
+		user = UserRequest.builder()
+				.username("jsjg73")
+				.password("password")
+				.nick("김제궁")
+				.departures(list)
+				.build();
+//		user =new UserDto("jsjg73", "password", "김제궁", list);
 //		user = new User();
 //		user.setUsername("jsjg73");
 //		user.setPassword("password");

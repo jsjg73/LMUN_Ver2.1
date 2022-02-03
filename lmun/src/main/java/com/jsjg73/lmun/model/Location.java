@@ -7,15 +7,14 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.jsjg73.lmun.model.manytomany.Departure;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Location {
 	@Id
 	private Long id;
@@ -27,19 +26,6 @@ public class Location {
 	private Category categoryGroupCode;
 	
 	@OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
-	private Set<Departure> users = new HashSet<>();
-
-	public Location(Long id, String placeName, Double lon, Double lat, String addressName, String roadAddressName,
-			Category categoryGroupCode) {
-		super();
-		this.id = id;
-		this.placeName = placeName;
-		this.lon = lon;
-		this.lat = lat;
-		this.addressName = addressName;
-		this.roadAddressName = roadAddressName;
-		this.categoryGroupCode = categoryGroupCode;
-	}
-	
+	private Set<Departure> departures = new HashSet<>();
 	
 }

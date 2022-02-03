@@ -14,14 +14,17 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class Participant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private ParticipantKey id;
+
     @ManyToOne
+    @MapsId("meeting_id")
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
     @ManyToOne
+    @MapsId("username")
     @JoinColumn(name = "username")
     private User user;
 
