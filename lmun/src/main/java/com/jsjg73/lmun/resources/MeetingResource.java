@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +39,7 @@ public class MeetingResource {
     }
 
     @PutMapping("/{meetingId}")
-//    @PreAuthorize("@meetingSecurityChecker.checkerHost(authentication, #meetingId)")
+    @PreAuthorize("hasAnyAuthority(#meetingId+':HOST')")
     public ResponseEntity<MeetingDto> updateMeeting(@PathVariable("meetingId") String meetingId, @RequestBody MeetingDto meetingDto){
         meetingService.update(meetingId, meetingDto);
 
