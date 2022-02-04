@@ -11,6 +11,7 @@ import com.jsjg73.lmun.repositories.MeetingRepository;
 import com.jsjg73.lmun.repositories.ParticipatingRepository;
 import com.jsjg73.lmun.repositories.UserRepository;
 import com.jsjg73.lmun.services.MeetingService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,31 +20,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MeetingServiceImpl implements MeetingService {
+    private MeetingRepository meetingRepository;
+    private UserRepository userRepository;
+    private ParticipatingRepository participatingRepository;
+    private ModelMapper modelMapper;
     @Autowired
-    MeetingRepository meetingRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ParticipatingRepository participatingRepository;
+    public MeetingServiceImpl(MeetingRepository meetingRepository, UserRepository userRepository, ParticipatingRepository participatingRepository, ModelMapper modelMapper) {
+        this.meetingRepository = meetingRepository;
+        this.userRepository = userRepository;
+        this.participatingRepository = participatingRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
-    public MeetingDto registerMeeting(MeetingDto meetingDto, String username) {
+    public String registerMeeting(MeetingDto meetingDto, String username) {
         User host = userRepository.getById(username);
-        Meeting meeting = meetingRepository.save(
-                new Meeting(meetingDto.getName(), host, meetingDto.getAtLeast())
-        );
-        participatingRepository.save(new Participant(meeting, host, host.getDefaultDeparture()));
+        Meeting meeting =  new Meeting(meetingDto.getName(), host, meetingDto.getAtLeast());
+        meeting = meetingRepository.save(meeting);
+        participate(meeting, host);
 
-        meetingDto.setId(meeting.getId());
-        meetingDto.setParticipantsCount(1);
-        meetingDto.setHost(host.getUsername());
-        return meetingDto;
+
+        return meeting.getId();
     }
 
     @Override
     public MeetingParticipantsDto getMeetingById(String meetingId) {
         Meeting meeting = findById(meetingId);
-        return new MeetingParticipantsDto(meeting);
+        return modelMapper.map(meeting, MeetingParticipantsDto.class);
     }
 
     @Override
@@ -64,10 +67,7 @@ public class MeetingServiceImpl implements MeetingService {
         if( meeting.containsUser(user) ){
             throw new AlreadyParticipationException(meetingId+" already in attendance.");
         }
-        Participant participant = new Participant(meeting, user, user.getDefaultDeparture());
-        user.getMeetings().add(participant);
-        meeting.getParticipants().add(participant);
-        participatingRepository.save(participant);
+        participate(meeting,user);
     }
 
     private Meeting findById(String id){
@@ -75,5 +75,13 @@ public class MeetingServiceImpl implements MeetingService {
                 .findById(id)
                 .orElseThrow(()->
                         new MeetingNotFoundException(String.format("MeetingId %s not found", id)));
+    }
+
+    private void participate(Meeting meeting, User host) {
+        Participant participant = new Participant(meeting, host, host.getDefaultDeparture());
+        participatingRepository.save(participant);
+        meeting.addParticipant(participant);
+        meetingRepository.save(meeting);
+        userRepository.save(host);
     }
 }

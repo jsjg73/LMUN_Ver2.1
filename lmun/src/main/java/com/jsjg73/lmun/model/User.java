@@ -29,7 +29,7 @@ public class User {
 	private List<Departure> departures = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")
-	private Set<Participant> meetings;
+	private Set<Participant> participants;
 
 	public Location getDefaultDeparture(){
 		return departures.get(0).getLocation();
@@ -51,15 +51,20 @@ public class User {
 	}
 
 	public Set<SimpleGrantedAuthority> getAuthorities() {
-		return meetings.stream().map(participant -> {
+		return participants.stream().map(participant -> {
 					Meeting meeting = participant.getMeeting();
 					String authority = null;
-					if (meeting.getHost().equals(username)) {
+					String host = meeting.getHost().getUsername();
+					if (host.equals(username)) {
 						authority = String.format("%s:HOST", meeting.getId());
 					} else {
 						authority = String.format("%s:GUEST", meeting.getId());
 					}
 					return new SimpleGrantedAuthority(authority);
 				}).collect(Collectors.toSet());
+	}
+
+	public void addParticipant(Participant participant) {
+		participants.add(participant);
 	}
 }

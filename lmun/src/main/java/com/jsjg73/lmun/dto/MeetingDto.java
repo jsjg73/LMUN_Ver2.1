@@ -1,15 +1,13 @@
 package com.jsjg73.lmun.dto;
 
 import com.jsjg73.lmun.model.Meeting;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class MeetingDto {
     String id;
     String name;

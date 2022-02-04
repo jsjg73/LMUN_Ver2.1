@@ -1,6 +1,7 @@
 package com.jsjg73.lmun.meeting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import com.jayway.jsonpath.JsonPath;
 import com.jsjg73.lmun.config.UTF8MockMvc;
 import com.jsjg73.lmun.dto.AuthenticationRequest;
@@ -12,6 +13,7 @@ import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.resources.MeetingResource;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,8 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @UTF8MockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Sql("classpath:/test/meeting/data.sql")
-@Transactional
+@Sql(value = "classpath:/test/meeting/insert-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "classpath:/test/meeting/delete-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+//@Transactional
 public class MeetingTests {
     @Autowired
     MockMvc mockMvc;
@@ -141,9 +145,7 @@ public class MeetingTests {
                 .andExpect(jsonPath("$.host").value("user1"))
                 .andExpect(jsonPath("$.atLeast").value(3))
                 .andExpect(jsonPath("$.participantsCount").value(3))
-                .andExpect(jsonPath("$.participants[0]").value("nick1"))
-                .andExpect(jsonPath("$.participants[1]").value("nick2"))
-                .andExpect(jsonPath("$.participants[2]").value("nick3"));
+                .andExpect(jsonPath("$.participants" ).value(containsInAnyOrder("user1", "user2", "user3")));
 
     }
     @Test

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,8 +28,8 @@ public class Meeting {
 
     private Integer atLeast;
 
-    @OneToMany(mappedBy = "meeting")
-    private Set<Participant> participants;
+    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+    private Set<Participant> participants=new HashSet<>();
 
     public Meeting(String name, User host, Integer atLeast) {
         this.name = name;
@@ -39,4 +40,16 @@ public class Meeting {
     public boolean containsUser(User user) {
         return participants.stream().filter(participant -> participant.getUser().equals(user)).count() == 1;
     }
+
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
+        participant.getUser().addParticipant(participant);
+    }
+
+//    public Participant attend(User user){
+//        Participant participant = new Participant(this, user, user.getDefaultDeparture());
+//        participants.add(participant);
+//        user.getMeetings().add(participant);
+//        return participant;
+//    }
 }

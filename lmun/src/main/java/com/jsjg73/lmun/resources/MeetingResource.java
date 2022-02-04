@@ -26,11 +26,11 @@ public class MeetingResource {
 
     @PostMapping
     public ResponseEntity<MeetingDto> registerMeeting(@RequestBody MeetingDto meetingDto, Authentication auth, HttpServletResponse httpServletResponse){
-        meetingDto=meetingService.registerMeeting(meetingDto, auth.getName());
+        String meetingId = meetingService.registerMeeting(meetingDto, auth.getName());
 
-        String token = jwtUtil.generateToken(auth.getName());
+        String token = jwtUtil.reGenerateToken(auth.getName());
         httpServletResponse.addHeader("Token" , token);
-        return new ResponseEntity<>( meetingDto, HttpStatus.CREATED);
+        return new ResponseEntity<>( meetingService.getMeetingById(meetingId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{meetingId}")

@@ -18,12 +18,12 @@ public class Participant {
     @EmbeddedId
     private ParticipantKey id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @MapsId("meeting_id")
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @MapsId("username")
     @JoinColumn(name = "username")
     private User user;
@@ -33,6 +33,7 @@ public class Participant {
     private Location departure;
 
     public Participant(Meeting meeting, User host, Location departure) {
+        this.id = new ParticipantKey(meeting.getId(), host.getUsername());
         this.meeting=meeting;
         this.user=host;
         this.departure=departure;
