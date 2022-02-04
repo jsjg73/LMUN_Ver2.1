@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+
 public class MeetingServiceImpl implements MeetingService {
     private MeetingRepository meetingRepository;
     private UserRepository userRepository;
@@ -33,23 +33,25 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
+    @Transactional
     public String registerMeeting(MeetingDto meetingDto, String username) {
-        User host = userRepository.getById(username);
+        User host = userRepository.findById(username).get();
         Meeting meeting =  new Meeting(meetingDto.getName(), host, meetingDto.getAtLeast());
-        meeting = meetingRepository.save(meeting);
+        meetingRepository.save(meeting);
         participate(meeting, host);
-
 
         return meeting.getId();
     }
 
     @Override
+    @Transactional
     public MeetingParticipantsDto getMeetingById(String meetingId) {
         Meeting meeting = findById(meetingId);
         return modelMapper.map(meeting, MeetingParticipantsDto.class);
     }
 
     @Override
+    @Transactional
     public Boolean update(String meetingId, MeetingDto meetingDto) {
         Meeting meeting = findById(meetingId);
         meeting.setName(meetingDto.getName());
@@ -60,6 +62,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
+    @Transactional
     public void participate(String meetingId, String username) {
         User user = userRepository.findById(username).orElseThrow(()->
                 new UsernameNotFoundException(String.format("Username %s not found", username)));
@@ -79,9 +82,6 @@ public class MeetingServiceImpl implements MeetingService {
 
     private void participate(Meeting meeting, User host) {
         Participant participant = new Participant(meeting, host, host.getDefaultDeparture());
-        participatingRepository.save(participant);
         meeting.addParticipant(participant);
-        meetingRepository.save(meeting);
-        userRepository.save(host);
     }
 }

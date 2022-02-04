@@ -43,13 +43,6 @@ public class Meeting {
 
     public void addParticipant(Participant participant) {
         participants.add(participant);
-        participant.getUser().addParticipant(participant);
     }
 
-//    public Participant attend(User user){
-//        Participant participant = new Participant(this, user, user.getDefaultDeparture());
-//        participants.add(participant);
-//        user.getMeetings().add(participant);
-//        return participant;
-//    }
 }

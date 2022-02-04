@@ -1,9 +1,6 @@
 package com.jsjg73.lmun.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.*;
@@ -28,8 +25,8 @@ public class User {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	private List<Departure> departures = new ArrayList<>();
 
-	@OneToMany(mappedBy = "user")
-	private Set<Participant> participants;
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	private Set<Participant> participants=new HashSet<>();
 
 	public Location getDefaultDeparture(){
 		return departures.get(0).getLocation();
