@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -108,7 +109,6 @@ public class MeetingTests {
     @Test
     @Order(3)
     @DisplayName("모임 단일 조회 실패(잘못된 모임 ID)")
-//    @Disabled
     public void getMeetingByIdFail() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders
@@ -128,7 +128,6 @@ public class MeetingTests {
     @Test
     @Order(3)
     @DisplayName("모임 단일 조회 성공")
-//    @Disabled
     public void getMeetingByIdSuccess() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
@@ -247,5 +246,46 @@ public class MeetingTests {
                 .andExpect(jsonPath("$.host").value("user1"))
                 .andExpect(jsonPath("$.atLeast").value(registeredMeeting.getAtLeast())) // 3
                 .andExpect(jsonPath("$.participantsCount").value(4));
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("참석자들 출발지 목록 조회 실패(존재하지않는 모임)")
+    public void getParticipantsFail() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders
+//                        .get("/meeting/"+registeredMeeting.getId()+"/departures")
+                        .get("/meeting/abcdefghijk/departures")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer "+tokenForUser1)
+        ).andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(handler().handlerType(MeetingResource.class))
+                .andExpect(handler().methodName("getParticipants"))
+                .andExpect(result -> assertInstanceOf(MeetingNotFoundException.class, result.getResolvedException()))
+                .andExpect(result -> assertEquals("MeetingId abcdefghijk not found", result.getResolvedException().getMessage()));
+    }
+    @Test
+    @Order(8)
+    @DisplayName("참석자들 출발지 목록 조회 성공")
+    public void getParticipants() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/meeting/"+registeredMeeting.getId()+"/departures")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer "+tokenForUser1)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MeetingResource.class))
+                .andExpect(handler().methodName("getParticipants"))
+                .andExpect(jsonPath("$.participants").value(hasSize(3)))
+                .andExpect(jsonPath("$.participants[0].departure.id").value(131213))
+                .andExpect(jsonPath("$.participants[0].departure.placeName").value("장소 이름"))
+                .andExpect(jsonPath("$.participants[0].departure.lon").value(3.3))
+                .andExpect(jsonPath("$.participants[0].departure.lat").value(1.1))
+                .andExpect(jsonPath("$.participants[0].departure.addressName").value("지번 주소"))
+                .andExpect(jsonPath("$.participants[0].departure.roadAddressName").value("도로명 주소"))
+                .andExpect(jsonPath("$.participants[0].departure.categoryGroupCode").value("PM9"));
+        
     }
 }
