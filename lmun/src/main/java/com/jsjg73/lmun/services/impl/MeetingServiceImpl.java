@@ -2,6 +2,7 @@ package com.jsjg73.lmun.services.impl;
 
 import com.jsjg73.lmun.dto.MeetingDto;
 import com.jsjg73.lmun.dto.MeetingParticipantsDto;
+import com.jsjg73.lmun.dto.ParticipantsResponse;
 import com.jsjg73.lmun.exceptions.AlreadyParticipationException;
 import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.model.Meeting;
@@ -71,6 +72,12 @@ public class MeetingServiceImpl implements MeetingService {
             throw new AlreadyParticipationException(meetingId+" already in attendance.");
         }
         participate(meeting,user);
+    }
+
+    @Override
+    public ParticipantsResponse getParticipants(String meetingId) {
+        Meeting meeting = findById(meetingId);
+        return modelMapper.map(meeting, ParticipantsResponse.class);
     }
 
     private Meeting findById(String id){

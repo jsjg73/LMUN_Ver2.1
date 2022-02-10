@@ -2,6 +2,7 @@ package com.jsjg73.lmun.resources;
 
 import com.jsjg73.lmun.dto.MeetingDto;
 import com.jsjg73.lmun.dto.MeetingParticipantsDto;
+import com.jsjg73.lmun.dto.ParticipantsResponse;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.services.MeetingService;
 import com.jsjg73.lmun.services.UserService;
@@ -50,5 +51,11 @@ public class MeetingResource {
     public ResponseEntity<MeetingDto> participateMeeting( @PathVariable("meetingId") String meetingId,Authentication authentication){
         meetingService.participate(meetingId, authentication.getName());
         return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{meetingId}/departures")
+    public ResponseEntity<ParticipantsResponse> getParticipants(@PathVariable("meetingId") String meetingId){
+        ParticipantsResponse participantsResponse = meetingService.getParticipants(meetingId);
+        return new ResponseEntity<>(participantsResponse, HttpStatus.OK);
     }
 }
