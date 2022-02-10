@@ -117,7 +117,7 @@ link :  [api상세.md](documents/api상세.md)
    }
    ```
 4. 모임 수정
-   - Description : {meetingID}} 모임의 정보를 수정한다.
+   - Description : {meetingID} 모임의 정보를 수정한다.
    ```
    PUT /meeting/{meetingId}
    Authorization: Bearer {JWT}
@@ -140,7 +140,7 @@ link :  [api상세.md](documents/api상세.md)
 5. 모임 참가
    - Description : 인증된 사용자가 모임에 참가한다.
    ```
-   PUT /meeting/{meetingId}/entrance
+   PUT /meeting/{meetingId}/participation
    Authorization: Bearer {JWT}
    ```
    ```(json)
@@ -167,11 +167,11 @@ link :  [api상세.md](documents/api상세.md)
             "username": 사용자 계정 아이디,
             "departure":{
                "id": 장소 id,
-               "place_name": 장소명,
+               "placeName": git장소명,
                "lon": 경도,
                "lat": 위도,
                "address_name": 지번 주소,
-               "road_address_name": 도로명 주소,
+               "roadAddressName": 도로명 주소,
                "category_group_code": 코드,
                "category_group_name": 코드 설명
             }
@@ -323,7 +323,7 @@ link :  [api상세.md](documents/api상세.md)
 |:-------:|:-----------:|:----------:|:------------:|:---------------------:|
 | meeting |             |            |              | GET(인증), POST(인증) |
 |         | {meetingId} |            |              | GET(인증), PUT(인가)        |
-|         |             | entrance   |              | PUT(인증)             |
+|         |             | participation   |              | PUT(인증)             |
 |         |             | departures |              | GET(인가)             |
 |         |             | log        |              | GET(인가)             |
 |         |             | proposal   |              | POST(인가)            |
