@@ -167,13 +167,12 @@ link :  [api상세.md](documents/api상세.md)
             "username": 사용자 계정 아이디,
             "departure":{
                "id": 장소 id,
-               "placeName": git장소명,
+               "placeName": 장소명,
                "lon": 경도,
                "lat": 위도,
-               "address_name": 지번 주소,
+               "addressName": 지번 주소,
                "roadAddressName": 도로명 주소,
-               "category_group_code": 코드,
-               "category_group_name": 코드 설명
+               "categoryGroupCode": 코드
             }
          },
          ...
@@ -215,11 +214,15 @@ link :  [api상세.md](documents/api상세.md)
    Request:
    {
       "destination":{
-         "name": 목적지 이름,
-         "lon":경도,
-         "lat: 위도
+         "id": 장소 id,
+         "placeName": 장소명,
+         "lon": 경도,
+         "lat": 위도,
+         "addressName": 지번 주소,
+         "roadAddressName": 도로명 주소,
+         "categoryGroupCode": 코드
       },
-      departures:[
+      origins:[
          {
             "username": 사용자 계정 아이디,
             "lon": 경도,
@@ -230,7 +233,8 @@ link :  [api상세.md](documents/api상세.md)
    }
    Response:
    {  
-      "propsal_id": 제안 id,
+      "meetingId": 모임 id,
+      "locationId": 장소 id,
       "timestamp": 생성시간,
       "update": 수정시간
    }
@@ -238,19 +242,20 @@ link :  [api상세.md](documents/api상세.md)
 9. 제안 조회
    - Description : 다른 참가자의 제안을 확인한다.
    ```
-   GET /meeting/{meetingId}/proposal/{proposalId}
+   GET /meeting/{meetingId}/proposal/{locationId}
    Authorization: Bearer {JWT}
    ```
    ```(json)
    Response:
    {  
-      "proposer_nick": 제안한 사용자의 이름,
+      "proposer": 제안한 사용자의 id,
       "destination":{
          "name": 목적지 이름,
+         "id": 장소 id,
          "lon":경도,
          "lat: 위도
       },
-      departures:[
+      origins:[
          {
             "username": 사용자 계정 아이디,
             "lon": 경도,
@@ -286,12 +291,12 @@ link :  [api상세.md](documents/api상세.md)
       "departures":[
          {
             "id": 장소 id,
-            "place_name": 장소명,
+            "placeName": 장소명,
             "lon": 경도,
             "lat": 위도,
-            "address_name": 지번 주소,
-            "road_address_name": 도로명 주소,
-            "category_group_code": 코드
+            "addressName": 지번 주소,
+            "roadAddressName": 도로명 주소,
+            "categoryGroupCode": 코드
          },
          ...
       ]
@@ -327,7 +332,7 @@ link :  [api상세.md](documents/api상세.md)
 |         |             | departures |              | GET(인가)             |
 |         |             | log        |              | GET(인가)             |
 |         |             | proposal   |              | POST(인가)            |
-|         |             |            | {proposalId} | GET(인가),PUT(인가)             |
+|         |             |            | {locationId} | GET(인가),PUT(인가)             |
 | user    |             |            |              | POST                  |
 |         |login        |            |              | POST                  |
 
