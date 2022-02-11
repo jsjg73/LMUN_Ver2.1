@@ -11,16 +11,12 @@ import com.jsjg73.lmun.model.manytomany.Participant;
 import com.jsjg73.lmun.model.manytomany.ParticipantKey;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @SpringBootTest
 public class ModelMapperTest {
@@ -42,7 +38,13 @@ public class ModelMapperTest {
 
         Set<Participant> participants = new HashSet<>();
         participants.add(participant);
-        meeting = new Meeting("모임 id","모임이름", user, 3, participants);
+        meeting = Meeting.builder()
+                    .id("모임 id")
+                    .name("모임이름")
+                    .host(user)
+                    .atLeast(3)
+                    .participants(participants)
+                    .build();
         participant.setMeeting(meeting);
 
         Location location = new Location(111L, "hello", 1.1, 2.2, "addressname", "road", Category.AC5, null);

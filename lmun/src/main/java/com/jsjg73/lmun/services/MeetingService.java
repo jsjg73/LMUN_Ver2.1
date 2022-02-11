@@ -1,8 +1,6 @@
 package com.jsjg73.lmun.services;
 
-import com.jsjg73.lmun.dto.MeetingDto;
-import com.jsjg73.lmun.dto.MeetingParticipantsDto;
-import com.jsjg73.lmun.dto.ParticipantsResponse;
+import com.jsjg73.lmun.dto.*;
 
 public interface MeetingService {
     public String registerMeeting(MeetingDto meetingDto, String username);
@@ -10,4 +8,8 @@ public interface MeetingService {
     public Boolean update(String meetingId, MeetingDto meetingDto);
     public void participate(String meetingId, String username);
     public ParticipantsResponse getParticipants(String meetingId);
+
+    public void registerProposal(String meetingId, String name, ProposalRequest proposalRequest);
+
+    public ProposalSuccessResponse getProposal(String meetingId, ProposalRequest proposalRequest);
 }

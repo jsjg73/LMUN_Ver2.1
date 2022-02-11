@@ -15,22 +15,23 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipantKey implements Serializable {
-    @Column(name = "meeting_id")
+public class ProposalKey implements Serializable {
+    @Column(name="meeting_id")
     String meetingId;
-    @Column(name = "username")
-    String username;
+
+    @Column(name="location_id")
+    Long locationId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParticipantKey that = (ParticipantKey) o;
-        return Objects.equals(meetingId, that.meetingId) && Objects.equals(username, that.username);
+        ProposalKey that = (ProposalKey) o;
+        return Objects.equals(meetingId, that.meetingId) && Objects.equals(locationId, that.locationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meetingId, username);
+        return Objects.hash(meetingId, locationId);
     }
 }

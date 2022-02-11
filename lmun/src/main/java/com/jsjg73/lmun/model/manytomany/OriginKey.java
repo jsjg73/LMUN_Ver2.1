@@ -15,9 +15,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipantKey implements Serializable {
-    @Column(name = "meeting_id")
-    String meetingId;
+public class OriginKey implements Serializable {
+    ProposalKey proposalId;
     @Column(name = "username")
     String username;
 
@@ -25,12 +24,12 @@ public class ParticipantKey implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParticipantKey that = (ParticipantKey) o;
-        return Objects.equals(meetingId, that.meetingId) && Objects.equals(username, that.username);
+        OriginKey originKey = (OriginKey) o;
+        return Objects.equals(proposalId, originKey.proposalId) && Objects.equals(username, originKey.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meetingId, username);
+        return Objects.hash(proposalId, username);
     }
 }

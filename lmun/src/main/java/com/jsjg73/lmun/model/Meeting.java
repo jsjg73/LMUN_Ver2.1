@@ -1,11 +1,13 @@
 package com.jsjg73.lmun.model;
 
 import com.jsjg73.lmun.model.manytomany.Participant;
+import com.jsjg73.lmun.model.manytomany.Proposal;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,6 +32,8 @@ public class Meeting {
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
     private Set<Participant> participants=new HashSet<>();
+    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+    private Set<Proposal> proposals = new HashSet<>();
 
     public Meeting(String name, User host, Integer atLeast) {
         this.name = name;
@@ -44,5 +48,20 @@ public class Meeting {
     public void addParticipant(Participant participant) {
         participants.add(participant);
     }
+    public void addProposal(Proposal proposal){
+        proposals.add(proposal);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Meeting meeting = (Meeting) o;
+        return Objects.equals(id, meeting.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

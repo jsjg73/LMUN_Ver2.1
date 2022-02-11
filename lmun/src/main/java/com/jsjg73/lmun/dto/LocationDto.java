@@ -4,15 +4,13 @@ import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.model.Location;
 
 import com.jsjg73.lmun.model.manytomany.Departure;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LocationDto {
 	private Long id;
 	private String placeName;

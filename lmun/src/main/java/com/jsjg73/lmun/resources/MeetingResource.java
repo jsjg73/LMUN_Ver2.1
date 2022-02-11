@@ -1,8 +1,6 @@
 package com.jsjg73.lmun.resources;
 
-import com.jsjg73.lmun.dto.MeetingDto;
-import com.jsjg73.lmun.dto.MeetingParticipantsDto;
-import com.jsjg73.lmun.dto.ParticipantsResponse;
+import com.jsjg73.lmun.dto.*;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.services.MeetingService;
 import com.jsjg73.lmun.services.UserService;
@@ -48,7 +46,8 @@ public class MeetingResource {
     }
 
     @PutMapping("/{meetingId}/participation")
-    public ResponseEntity<MeetingDto> participateMeeting( @PathVariable("meetingId") String meetingId,Authentication authentication){
+    public ResponseEntity<MeetingDto> participateMeeting( @PathVariable("meetingId") String meetingId,
+                                                          Authentication authentication){
         meetingService.participate(meetingId, authentication.getName());
         return new ResponseEntity<>(meetingService.getMeetingById(meetingId), HttpStatus.OK);
     }
@@ -57,5 +56,15 @@ public class MeetingResource {
     public ResponseEntity<ParticipantsResponse> getParticipants(@PathVariable("meetingId") String meetingId){
         ParticipantsResponse participantsResponse = meetingService.getParticipants(meetingId);
         return new ResponseEntity<>(participantsResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/{meetingId}/proposal")
+    @PreAuthorize("hasAnyAuthority(#meetingId+':HOST')")
+    public ResponseEntity<ProposalSuccessResponse> registerProposal(@PathVariable("meetingId") String meetingId,
+                                                                    @RequestBody ProposalRequest proposalRequest,
+                                                                    Authentication authentication){
+        meetingService.registerProposal(meetingId, authentication.getName(),proposalRequest);
+        ProposalSuccessResponse success = meetingService.getProposal(meetingId, proposalRequest);
+        return new ResponseEntity<>(success, HttpStatus.OK);
     }
 }
