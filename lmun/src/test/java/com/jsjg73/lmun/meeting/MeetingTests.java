@@ -1,8 +1,6 @@
 package com.jsjg73.lmun.meeting;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 import com.jayway.jsonpath.JsonPath;
 import com.jsjg73.lmun.config.UTF8MockMvc;
 import com.jsjg73.lmun.dto.*;
@@ -12,7 +10,6 @@ import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
 import com.jsjg73.lmun.resources.MeetingResource;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +32,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Sql(value = "classpath:/test/meeting/insert-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = "classpath:/test/meeting/delete-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-//@Transactional
 public class MeetingTests {
     @Autowired
     MockMvc mockMvc;
     static LocationDto departure= new LocationDto(131213L,"장소 이름",1.1, 3.3,"지번 주소", "도로명 주소", Category.PM9);
     static MeetingRequest meetingRequest= new MeetingRequest("Math Study", 3);
-    static MeetingDto registeredMeeting = new MeetingDto("abcdefghijklm","모임 이름", "user1", 3, 1);
+    static MeetingDto registeredMeeting =  MeetingDto.builder()
+            .id("abcdefghijklm")
+            .name("모임 이름")
+            .host("user1")
+            .atLeast(3)
+            .participantsCount(1)
+            .build();
     static AuthenticationRequest authenticationRequest=new AuthenticationRequest("user1", "password");;
-    private static String tokenForUser1 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhYmNkZWZnaGlqa2xtOkhPU1QifV0sImlhdCI6MTY0MzgxMjM5OCwiZXhwIjoxNjQ0NTkxNjAwfQ.GROTIXSEBv-_pq923tM0LIgDQXiD709wW1VfPXqvFko-U6RAQgT9VYmcJ_90OF6QHski8rzaQMU2rZ3XWeIthw";
+    private static String tokenForUser1 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhYmNkZWZnaGlqa2xtOkhPU1QifV0sImlhdCI6MTY0MzgxMjM5OCwiZXhwIjo5OTk5OTk5OTk5fQ.P_k2dRNAdRSs1oYNTX-6hiQuSrPWcGkOX7vjoAfOEJyDpoNTVoLbT6H7OXAp3GQY-pf9ZeubMGApAvyUmz3cMQ";
     private static String tokenForUser2 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhbGdvcml0aG1zU3R1ZHk6SE9TVCJ9XSwiaWF0IjoxNjQzODEyMzk4LCJleHAiOjk5OTk5OTk5OTl9.ZTQVOuvcMsk0OQFtsfShM2e1cWKYJpMSa9sBxaTGLY7Yy4JbqVfolceTeGmteAZUIA7lSxB48UG3vqOO--13jQ";
     private static String tokenForUser4 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyNCIsImF1dGhvcml0aWVzIjpbXSwiaWF0IjoxNjQzODEyMzk4LCJleHAiOjk5OTk5OTk5OTl9.jz-xMU-iPq-6LZdT61NPHpKHWmJlG0GY-jaVNI9o6VMk8gHv7b_OjOkuGubr2KTg0bYd3fT7-7PzmgAWm8F9og";
     @Autowired
@@ -143,7 +144,9 @@ public class MeetingTests {
                 .andExpect(jsonPath("$.host").value("user1"))
                 .andExpect(jsonPath("$.atLeast").value(3))
                 .andExpect(jsonPath("$.participantsCount").value(3))
-                .andExpect(jsonPath("$.participants" ).value(containsInAnyOrder("user1", "user2", "user3")));
+                .andExpect(jsonPath("$.participants" ).value(containsInAnyOrder("user1", "user2", "user3")))
+                .andExpect(jsonPath("$.createAt").isNotEmpty())
+                .andExpect(jsonPath("$.updateAt").isNotEmpty());
 
     }
     @Test
@@ -187,7 +190,9 @@ public class MeetingTests {
                 .andExpect(jsonPath("$.name").value(meetingRequest.getName()))  // updateName
                 .andExpect(jsonPath("$.host").value("user1"))
                 .andExpect(jsonPath("$.atLeast").value(meetingRequest.getAtLeast())) // 2
-                .andExpect(jsonPath("$.participantsCount").value(3));
+                .andExpect(jsonPath("$.participantsCount").value(3))
+                .andExpect(jsonPath("$.createAt").isNotEmpty())
+                .andExpect(jsonPath("$.updateAt").isNotEmpty());
     }
 
     @Test

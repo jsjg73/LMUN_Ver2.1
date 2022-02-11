@@ -20,4 +20,5 @@
    - @ResponseBody abstract
    - jackson abstract class deserialize
 
-- entity와 dto의 매핑 라이브러리 modelmapper 학습
+- expired token 시 response
+

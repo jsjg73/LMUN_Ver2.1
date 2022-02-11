@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,6 +14,6 @@ import java.sql.Date;
 public class ProposalSuccessResponse {
     String meetingId;
     String locationId;
-    Date timestamp;
-    Date update;
+    LocalDateTime createAt;
+    LocalDateTime updateAt;
 }

@@ -6,8 +6,11 @@ import com.jsjg73.lmun.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,6 +22,11 @@ public class Proposal {
 
     @EmbeddedId
     private ProposalKey id;
+
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @MapsId("meeting_id")

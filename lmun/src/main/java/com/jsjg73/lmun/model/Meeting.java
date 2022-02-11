@@ -3,9 +3,12 @@ package com.jsjg73.lmun.model;
 import com.jsjg73.lmun.model.manytomany.Participant;
 import com.jsjg73.lmun.model.manytomany.Proposal;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,6 +37,11 @@ public class Meeting {
     private Set<Participant> participants=new HashSet<>();
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
     private Set<Proposal> proposals = new HashSet<>();
+
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     public Meeting(String name, User host, Integer atLeast) {
         this.name = name;

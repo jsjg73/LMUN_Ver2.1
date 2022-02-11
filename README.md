@@ -113,7 +113,9 @@ link :  [api상세.md](documents/api상세.md)
       "participantsCount": 현재참석인원수,
       "participants":[
          참가자 이름, ...
-      ]
+      ],
+      "createAt": 생성시간,
+      "updateAt": 수정시간
    }
    ```
 4. 모임 수정
@@ -134,7 +136,9 @@ link :  [api상세.md](documents/api상세.md)
       "name": 모임 이름,
       "host": 관리자 이름,
       "atLeast": 최소인원,
-      "participantsCount": 현재참석인원수
+      "participantsCount": 현재참석인원수,
+      "createAt": 생성시간,
+      "updateAt": 수정시간
    }
    ```   
 5. 모임 참가
@@ -150,7 +154,9 @@ link :  [api상세.md](documents/api상세.md)
       "name": 모임 이름,
       "host": 관리자 이름,
       "atLeast": 최소인원,
-      "participantsCount": 현재참석인원수 
+      "participantsCount": 현재참석인원수 ,
+      "createAt": 생성시간,
+      "updateAt": 수정시간
    }
    ```   
 6. 참석자 출발지 목록
@@ -235,8 +241,8 @@ link :  [api상세.md](documents/api상세.md)
    {  
       "meetingId": 모임 id,
       "locationId": 장소 id,
-      "timestamp": 생성시간,
-      "update": 수정시간
+      "creatAt": 생성시간,
+      "updateAt": 수정시간
    }
    ```
 9. 제안 조회

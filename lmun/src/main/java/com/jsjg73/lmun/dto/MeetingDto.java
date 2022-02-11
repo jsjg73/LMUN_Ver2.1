@@ -3,17 +3,22 @@ package com.jsjg73.lmun.dto;
 import com.jsjg73.lmun.model.Meeting;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class MeetingDto {
     String id;
     String name;
     String host;
     Integer atLeast;
     Integer participantsCount;
+    LocalDateTime createAt;
+    LocalDateTime updateAt;
 
     public MeetingDto(String id, String name, String host, Integer atLeast) {
         this.id = id;

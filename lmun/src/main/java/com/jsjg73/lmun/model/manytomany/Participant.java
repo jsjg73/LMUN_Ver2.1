@@ -6,8 +6,11 @@ import com.jsjg73.lmun.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -32,6 +35,11 @@ public class Participant {
     @OneToOne
     @JoinColumn(name="departure_id")
     private Location departure;
+
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
 
     public Participant(Meeting meeting, User host, Location departure) {
         this.id = new ParticipantKey(meeting.getId(), host.getUsername());

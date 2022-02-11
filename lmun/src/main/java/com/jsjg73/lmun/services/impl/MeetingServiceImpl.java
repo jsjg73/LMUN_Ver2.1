@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,10 +87,10 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public void registerProposal(String meetingId, String username, ProposalRequest proposalRequest) {
-        // TODO 제안 생성 서비스 로직 구현
+
         Meeting meeting = findById(meetingId);
         User proposer = findUserByUsername(username);
-        //destination 저장
+
         Location destination = proposalRequest.getDestination().toEntity();
 
         ProposalKey proposalKey = new ProposalKey(meetingId, destination.getId());
@@ -116,11 +115,10 @@ public class MeetingServiceImpl implements MeetingService {
         proposal.setOrigins(origins);
         meeting.addProposal(proposal);
         meeting.setAtLeast(5);
-//        meetingRepository.save(meeting);
-//        return null;
     }
 
     @Override
+    @Transactional
     public ProposalSuccessResponse getProposal(String meetingId, ProposalRequest proposalRequest) {
         Long locId = proposalRequest.getDestination().getId();
         Proposal proposal = proposalRepository.findById(new ProposalKey(meetingId, locId)).orElseThrow();

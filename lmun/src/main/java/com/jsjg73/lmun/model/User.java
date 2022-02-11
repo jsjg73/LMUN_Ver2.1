@@ -1,5 +1,6 @@
 package com.jsjg73.lmun.model;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,8 @@ import com.jsjg73.lmun.model.manytomany.Departure;
 import com.jsjg73.lmun.model.manytomany.Participant;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Entity
@@ -22,11 +25,17 @@ public class User {
 	private String username;
 	private String password;
 	private String nick;
+
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	private List<Departure> departures = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	private Set<Participant> participants=new HashSet<>();
+
+	@CreationTimestamp
+	private LocalDateTime createAt;
+	@UpdateTimestamp
+	private LocalDateTime updateAt;
 
 	public Location getDefaultDeparture(){
 		return departures.get(0).getLocation();

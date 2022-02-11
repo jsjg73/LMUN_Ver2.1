@@ -42,8 +42,6 @@ public class UserTests {
 	static LocationDto departure;
 	static UserRequest user;
 
-	private String token;
-	
 	@BeforeAll
 	public static void beforeAll() {
 		departure = new LocationDto(16618597L,
@@ -57,26 +55,9 @@ public class UserTests {
 				.nick("김제궁")
 				.departures(list)
 				.build();
-//		user =new UserDto("jsjg73", "password", "김제궁", list);
-//		user = new User();
-//		user.setUsername("jsjg73");
-//		user.setPassword("password");
-//		user.setNick("김제궁");
-//		user.appendDeparture(departure);
-		
 	}
 	@Test
 	public void context() {
-		ObjectMapper mapper = new ObjectMapper();
-		String requestContent = null;
-		try {
-			requestContent = mapper.writeValueAsString(user);
-			System.out.println(requestContent);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail();
-		}
-		assertNotNull(requestContent);
 	}
 	@Test
 	@Order(1)
