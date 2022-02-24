@@ -125,6 +125,12 @@ public class MeetingServiceImpl implements MeetingService {
         return modelMapper.map(proposal, ProposalSuccessResponse.class);
     }
 
+    @Override
+    @Transactional
+    public boolean alreadyProposedPlace(String meetingId, ProposalRequest proposalRequest) {
+        return proposalRepository.findById(new ProposalKey(meetingId, proposalRequest.getDestination().getId())).isPresent();
+    }
+
     private Meeting findById(String id){
         return meetingRepository
                 .findById(id)

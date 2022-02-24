@@ -6,6 +6,7 @@ import com.jsjg73.lmun.config.UTF8MockMvc;
 import com.jsjg73.lmun.dto.*;
 import com.jsjg73.lmun.dto.meeting.MeetingRequest;
 import com.jsjg73.lmun.exceptions.AlreadyParticipationException;
+import com.jsjg73.lmun.exceptions.DuplicatedProposalException;
 import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
@@ -298,46 +299,70 @@ public class MeetingTests {
     @DisplayName("제안 생성 실패(이미 제안된 장소)")
     public void registryProposalFail() throws Exception {
         //TODO : 제안 생성 실패 테스트
-//        LocationDto destination
-//                = LocationDto.builder()
-//                .id(26338954L)
-//                .placeName("카카오프렌즈 코엑스점")
-//                .addressName("서울 강남구 삼성동 159")
-//                .roadAddressName("서울 강남구 영동대로 513")
-//                .lat(37.51207412593136)
-//                .lon(127.05902969025047)
-//                .categoryGroupCode(Category.NULL)
-//                .build();
-//        OriginRequest origin1
-//                = OriginRequest.builder()
-//                .username("user1")
-//                .lon(127.13243772760565)
-//                .lat(37.44148514309502)
-//                .build();
-//        OriginRequest origin2
-//                = OriginRequest.builder()
-//                .username("user2")
-//                .lon(127.1331694942593)
-//                .lat(37.4463137562622)
-//                .build();
-//        ProposalRequest proposalRequest
-//                = ProposalRequest.builder()
-//                .destination(destination)
-//                .origins(List.of(origin1, origin2))
-//                .build();
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders
-//                        .post("/meeting/"+registeredMeeting.getId()+"/proposal")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(proposalRequest))
-//                        .header("Authorization", "Bearer "+tokenForUser1)
-//        )
+        LocationDto destination
+                = LocationDto.builder()
+                .id(26338954L)
+                .placeName("카카오프렌즈 코엑스점")
+                .addressName("서울 강남구 삼성동 159")
+                .roadAddressName("서울 강남구 영동대로 513")
+                .lat(37.51207412593136)
+                .lon(127.05902969025047)
+                .categoryGroupCode(Category.NULL)
+                .build();
+        OriginRequest origin1
+                = OriginRequest.builder()
+                .username("user1")
+                .lon(127.13243772760565)
+                .lat(37.44148514309502)
+                .build();
+        OriginRequest origin2
+                = OriginRequest.builder()
+                .username("user2")
+                .lon(127.1331694942593)
+                .lat(37.4463137562622)
+                .build();
+        ProposalRequest proposalRequest
+                = ProposalRequest.builder()
+                .destination(destination)
+                .origins(List.of(origin1, origin2))
+                .build();
+
+        // register proposal
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .post("/meeting/"+registeredMeeting.getId()+"/proposal")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(new ObjectMapper().writeValueAsString(proposalRequest))
+                                .header("Authorization", "Bearer "+tokenForUser1)
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MeetingResource.class))
+                .andExpect(handler().methodName("registerProposal"))
+                .andExpect(jsonPath("$.meetingId").value(registeredMeeting.getId()))
+                .andExpect(jsonPath("$.locationId").value(26338954L));
+
+        // again
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .post("/meeting/"+registeredMeeting.getId()+"/proposal")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(proposalRequest))
+                        .header("Authorization", "Bearer "+tokenForUser1)
+                ).andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(handler().handlerType(MeetingResource.class))
+                .andExpect(handler().methodName("registerProposal"))
+                .andExpect(
+                        result -> {
+                            assertInstanceOf(DuplicatedProposalException.class, result.getResolvedException());
+                            assertEquals("this place is already proposed", result.getResolvedException().getMessage());
+                });
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     @DisplayName("제안 생성 성공")
     public void registryProposal() throws Exception {
         LocationDto destination

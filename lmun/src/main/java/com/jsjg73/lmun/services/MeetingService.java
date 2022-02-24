@@ -12,4 +12,6 @@ public interface MeetingService {
     public void registerProposal(String meetingId, String name, ProposalRequest proposalRequest);
 
     public ProposalSuccessResponse getProposal(String meetingId, ProposalRequest proposalRequest);
+
+    public boolean alreadyProposedPlace(String meetingId, ProposalRequest proposalRequest);
 }

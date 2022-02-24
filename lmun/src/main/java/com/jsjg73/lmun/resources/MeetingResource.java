@@ -1,6 +1,7 @@
 package com.jsjg73.lmun.resources;
 
 import com.jsjg73.lmun.dto.*;
+import com.jsjg73.lmun.exceptions.DuplicatedProposalException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.services.MeetingService;
 import com.jsjg73.lmun.services.UserService;
@@ -63,6 +64,9 @@ public class MeetingResource {
     public ResponseEntity<ProposalSuccessResponse> registerProposal(@PathVariable("meetingId") String meetingId,
                                                                     @RequestBody ProposalRequest proposalRequest,
                                                                     Authentication authentication){
+        if(meetingService.alreadyProposedPlace(meetingId, proposalRequest)){
+            throw new DuplicatedProposalException("this place is already proposed");
+        }
         meetingService.registerProposal(meetingId, authentication.getName(),proposalRequest);
         ProposalSuccessResponse success = meetingService.getProposal(meetingId, proposalRequest);
         return new ResponseEntity<>(success, HttpStatus.OK);
