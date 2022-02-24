@@ -1,5 +1,6 @@
 package com.jsjg73.lmun.meeting;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jsjg73.lmun.config.UTF8MockMvc;
@@ -47,7 +48,7 @@ public class MeetingTests {
             .build();
     static AuthenticationRequest authenticationRequest=new AuthenticationRequest("user1", "password");;
     private static String tokenForUser1 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhYmNkZWZnaGlqa2xtOkhPU1QifV0sImlhdCI6MTY0MzgxMjM5OCwiZXhwIjo5OTk5OTk5OTk5fQ.P_k2dRNAdRSs1oYNTX-6hiQuSrPWcGkOX7vjoAfOEJyDpoNTVoLbT6H7OXAp3GQY-pf9ZeubMGApAvyUmz3cMQ";
-    private static String tokenForUser2 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhbGdvcml0aG1zU3R1ZHk6SE9TVCJ9XSwiaWF0IjoxNjQzODEyMzk4LCJleHAiOjk5OTk5OTk5OTl9.ZTQVOuvcMsk0OQFtsfShM2e1cWKYJpMSa9sBxaTGLY7Yy4JbqVfolceTeGmteAZUIA7lSxB48UG3vqOO--13jQ";
+    private static String tokenForUser2 ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJhYmNkZWZnaGlqa2xtOkdVRVNUIn0seyJhdXRob3JpdHkiOiJhbGdvcml0aG1zU3R1ZHk6SE9TVCJ9XSwiaWF0IjoxNjQ1NzA0NDk1LCJleHAiOjk5OTk5OTk5OTl9.GR_CF_nuSUYYFMkIt6-YMPkNymFldCUF2KgQTSPAY_2L9fz8r7306-vM9d6-6fEuI9V_r1XnfnVWDLFQa8Ho6w";
     private static String tokenForUser4 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyNCIsImF1dGhvcml0aWVzIjpbXSwiaWF0IjoxNjQzODEyMzk4LCJleHAiOjk5OTk5OTk5OTl9.jz-xMU-iPq-6LZdT61NPHpKHWmJlG0GY-jaVNI9o6VMk8gHv7b_OjOkuGubr2KTg0bYd3fT7-7PzmgAWm8F9og";
     @Autowired
     private JwtUtil jwtUtil;
@@ -333,11 +334,31 @@ public class MeetingTests {
                             assertEquals("this place is already proposed", result.getResolvedException().getMessage());
                 });
     }
-
     @Test
     @Order(10)
-    @DisplayName("제안 생성 성공")
-    public void registryProposal() throws Exception {
+    @DisplayName("제안 생성 실패(unauthorized)")
+    public void registryProposalFailUnauthorized() throws Exception {
+        ProposalRequest proposalRequest = proposalDataForTest();
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders
+                                .post("/meeting/"+registeredMeeting.getId()+"/proposal")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(new ObjectMapper().writeValueAsString(proposalRequest))
+
+                                // user4 is not going to participate in this meeting.
+                                .header("Authorization", "Bearer "+tokenForUser4)
+                ).andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> {
+                    assertEquals("Forbidden", result.getResponse().getErrorMessage());
+                });
+    }
+    @Test
+    @Order(11)
+    @DisplayName("제안 생성 성공(HOST)")
+    public void registryProposalHost() throws Exception {
         ProposalRequest proposalRequest = proposalDataForTest();
 
         mockMvc.perform(
@@ -347,6 +368,26 @@ public class MeetingTests {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(proposalRequest))
                         .header("Authorization", "Bearer "+tokenForUser1)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(MeetingResource.class))
+                .andExpect(handler().methodName("registerProposal"))
+                .andExpect(jsonPath("$.meetingId").value(registeredMeeting.getId()))
+                .andExpect(jsonPath("$.locationId").value(26338954L));
+    }
+    @Test
+    @Order(12)
+    @DisplayName("제안 생성 성공(GUEST)")
+    public void registryProposalGuest() throws Exception {
+        ProposalRequest proposalRequest = proposalDataForTest();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                        .post("/meeting/"+registeredMeeting.getId()+"/proposal")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(proposalRequest))
+                        .header("Authorization", "Bearer "+tokenForUser2)
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(MeetingResource.class))
