@@ -60,7 +60,7 @@ public class MeetingResource {
     }
 
     @PostMapping("/{meetingId}/proposal")
-    @PreAuthorize("hasAnyAuthority(#meetingId+':HOST')")
+    @PreAuthorize("hasAnyAuthority(#meetingId+':HOST', #meetingId+':GUEST')")
     public ResponseEntity<ProposalSuccessResponse> registerProposal(@PathVariable("meetingId") String meetingId,
                                                                     @RequestBody ProposalRequest proposalRequest,
                                                                     Authentication authentication){
