@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -92,6 +93,7 @@ public class MeetingServiceImpl implements MeetingService {
         User proposer = findUserByUsername(username);
 
         Location destination = proposalRequest.getDestination().toEntity();
+        destination.increaseCount();
 
         ProposalKey proposalKey = new ProposalKey(meetingId, destination.getId());
         Proposal proposal = new Proposal();
@@ -121,14 +123,18 @@ public class MeetingServiceImpl implements MeetingService {
     @Transactional
     public ProposalSuccessResponse getProposal(String meetingId, ProposalRequest proposalRequest) {
         Long locId = proposalRequest.getDestination().getId();
-        Proposal proposal = proposalRepository.findById(new ProposalKey(meetingId, locId)).orElseThrow();
+        Proposal proposal = findProposalById(meetingId, proposalRequest.getDestination().getId()).orElseThrow();
         return modelMapper.map(proposal, ProposalSuccessResponse.class);
     }
 
     @Override
     @Transactional
     public boolean alreadyProposedPlace(String meetingId, ProposalRequest proposalRequest) {
-        return proposalRepository.findById(new ProposalKey(meetingId, proposalRequest.getDestination().getId())).isPresent();
+        return findProposalById(meetingId, proposalRequest.getDestination().getId()).isPresent();
+    }
+
+    private Optional<Proposal> findProposalById(String meetingId, Long locationId){
+        return proposalRepository.findById(new ProposalKey(meetingId, locationId));
     }
 
     private Meeting findById(String id){

@@ -19,6 +19,7 @@ public class LocationDto {
 	private String addressName;
 	private String roadAddressName;
 	private Category categoryGroupCode;
+	private int proposalCount;
 	
 	public LocationDto(Departure departure) {
 		Location location = departure.getLocation();
@@ -29,6 +30,7 @@ public class LocationDto {
 		this.addressName=location.getAddressName();
 		this.roadAddressName=location.getRoadAddressName();
 		this.categoryGroupCode=location.getCategoryGroupCode();
+		this.proposalCount=location.getProposalCount();
 	}
 	public Location toEntity() {
 		return Location.builder()
@@ -37,6 +39,7 @@ public class LocationDto {
 				.lon(lon).lat(lat)
 				.addressName(addressName).roadAddressName(roadAddressName)
 				.categoryGroupCode(categoryGroupCode)
+				.proposalCount(proposalCount)
 				.build();
 	}
 }

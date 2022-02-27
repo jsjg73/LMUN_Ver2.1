@@ -25,11 +25,15 @@ public class Location {
 	private String addressName;
 	private String roadAddressName;
 	private Category categoryGroupCode;
-	private Integer proposalCount;
+	@Column(columnDefinition = "integer default 0")
+	private int proposalCount = 0;
 
 	@OneToMany(mappedBy = "location")
 	private Set<Departure> departures = new HashSet<>();
 
+	public void increaseCount(){
+		proposalCount++;
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

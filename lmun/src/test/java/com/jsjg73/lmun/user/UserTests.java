@@ -47,7 +47,7 @@ public class UserTests {
 		departure = new LocationDto(16618597L,
 				"장생당약국", 
 				127.05897078335246, 37.506051888130386, 
-				"서울 강남구 대치동 943-16", "서울 강남구 테헤란로84길 17", Category.PM9);
+				"서울 강남구 대치동 943-16", "서울 강남구 테헤란로84길 17", Category.PM9, 0);
 		List<LocationDto> list = List.of(departure);
 		user = UserRequest.builder()
 				.username("jsjg73")

@@ -1,6 +1,5 @@
 package com.jsjg73.lmun.meeting;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jsjg73.lmun.config.UTF8MockMvc;
@@ -11,6 +10,8 @@ import com.jsjg73.lmun.exceptions.DuplicatedProposalException;
 import com.jsjg73.lmun.exceptions.MeetingNotFoundException;
 import com.jsjg73.lmun.jwt.JwtUtil;
 import com.jsjg73.lmun.model.Category;
+import com.jsjg73.lmun.model.Location;
+import com.jsjg73.lmun.repositories.LocationRepository;
 import com.jsjg73.lmun.resources.MeetingResource;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MeetingTests {
     @Autowired
     MockMvc mockMvc;
-    static LocationDto departure= new LocationDto(131213L,"장소 이름",1.1, 3.3,"지번 주소", "도로명 주소", Category.PM9);
+//    static LocationDto departure= new LocationDto(131213L,"장소 이름",1.1, 3.3,"지번 주소", "도로명 주소", Category.PM9);
     static MeetingRequest meetingRequest= new MeetingRequest("Math Study", 3);
     static MeetingDto registeredMeeting =  MeetingDto.builder()
             .id("abcdefghijklm")
@@ -52,6 +54,9 @@ public class MeetingTests {
     private static String tokenForUser4 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyNCIsImF1dGhvcml0aWVzIjpbXSwiaWF0IjoxNjQzODEyMzk4LCJleHAiOjk5OTk5OTk5OTl9.jz-xMU-iPq-6LZdT61NPHpKHWmJlG0GY-jaVNI9o6VMk8gHv7b_OjOkuGubr2KTg0bYd3fT7-7PzmgAWm8F9og";
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Test
     @Order(1)
@@ -360,6 +365,7 @@ public class MeetingTests {
     @DisplayName("제안 생성 성공(HOST)")
     public void registryProposalHost() throws Exception {
         ProposalRequest proposalRequest = proposalDataForTest();
+        assertFalse(locationRepository.findById(26338954L).isPresent());
 
         mockMvc.perform(
                 MockMvcRequestBuilders
@@ -374,6 +380,10 @@ public class MeetingTests {
                 .andExpect(handler().methodName("registerProposal"))
                 .andExpect(jsonPath("$.meetingId").value(registeredMeeting.getId()))
                 .andExpect(jsonPath("$.locationId").value(26338954L));
+
+        Optional<Location> proposedLocation = locationRepository.findById(26338954L);
+        assertTrue(proposedLocation.isPresent());
+        assertEquals(1, proposedLocation.get().getProposalCount());
     }
     @Test
     @Order(12)
