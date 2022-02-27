@@ -6,10 +6,10 @@ insert into user (username, password, nick, create_at, update_at) values ('user2
 insert into user (username, password, nick, create_at, update_at) values ('user3', '$2a$10$WzeYhQjxmb3a4r13HOxWO.gZgU4H96LmEr43ZsKndYZt.HeiRh6L6', 'nick3', now(), now());
 insert into user (username, password, nick, create_at, update_at) values ('user4', '$2a$10$WzeYhQjxmb3a4r13HOxWO.gZgU4H96LmEr43ZsKndYZt.HeiRh6L6', 'nick4', now(), now());
 
-insert into departure (username, location_id) values ('user1', 131213);
-insert into departure (username, location_id) values ('user2', 131213);
-insert into departure (username, location_id) values ('user3', 131213);
-insert into departure (username, location_id) values ('user4', 131213);
+insert into user_departure (username, location_id) values ('user1', 131213);
+insert into user_departure (username, location_id) values ('user2', 131213);
+insert into user_departure (username, location_id) values ('user3', 131213);
+insert into user_departure (username, location_id) values ('user4', 131213);
 
 -- user1이 호스트
 -- user2, user3이 게스트 
