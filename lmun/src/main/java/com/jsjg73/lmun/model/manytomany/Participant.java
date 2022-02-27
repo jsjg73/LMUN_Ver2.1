@@ -36,6 +36,9 @@ public class Participant {
     @JoinColumn(name="departure_id")
     private Location departure;
 
+    @Column(columnDefinition="tinyint(1) default 1")
+    private boolean attending;
+
     @CreationTimestamp
     private LocalDateTime createAt;
     @UpdateTimestamp

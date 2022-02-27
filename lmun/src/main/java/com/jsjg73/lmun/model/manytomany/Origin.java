@@ -6,7 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "proposalOrigin")
 @Getter
 @Setter
 @NoArgsConstructor
