@@ -12,8 +12,8 @@
 
 
 ### 기타
+- 모임 종료 api 추가.
 - 경로 탐색을 위한 외부 api의 사용법 정리.
-- 테스트 코드 작성에 사용할 모임, 유저, 주소 등 데이터 수집.
 - 모든 api에 대한 테스트 코드 작성.
 
 - 모임 로그는 입장, 퇴장, 변경, 제안 등으로 나뉜다. 유형에 따라 알맞은 key:value로 매핑해서 응답하기 위해선 다형성 관계를 지닌 객체들을 바인딩하고 response body로 어떻게 구성하는지 찾아봐야한다.
@@ -21,4 +21,6 @@
    - jackson abstract class deserialize
 
 - expired token 시 response
+- API 리스폰스 형식에 대해 best practice 조사
+
 
