@@ -32,6 +32,7 @@ public class Meeting {
     private User host;
 
     private Integer atLeast;
+    private boolean terminated = false;
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
     private Set<Participant> participants=new HashSet<>();
