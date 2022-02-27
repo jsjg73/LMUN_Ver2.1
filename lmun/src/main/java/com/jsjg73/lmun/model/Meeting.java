@@ -5,6 +5,7 @@ import com.jsjg73.lmun.model.manytomany.Proposal;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -32,7 +33,9 @@ public class Meeting {
     private User host;
 
     private Integer atLeast;
-    private boolean terminated = false;
+
+    @Column(columnDefinition="tinyint(1) default 0")
+    private boolean closed;
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
     private Set<Participant> participants=new HashSet<>();
