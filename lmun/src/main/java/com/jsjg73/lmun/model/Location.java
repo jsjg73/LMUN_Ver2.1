@@ -26,7 +26,7 @@ public class Location {
 	private String roadAddressName;
 	private Category categoryGroupCode;
 	
-	@OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "location")
 	private Set<Departure> departures = new HashSet<>();
 
 	@Override

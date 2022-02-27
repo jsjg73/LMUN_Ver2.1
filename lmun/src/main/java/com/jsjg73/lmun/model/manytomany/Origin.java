@@ -16,7 +16,7 @@ public class Origin {
     @EmbeddedId
     private OriginKey id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("proposalId")
     @JoinColumns({
         @JoinColumn(name="meeting_id"),
@@ -24,7 +24,7 @@ public class Origin {
     })
     private Proposal proposal;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("username")
     @JoinColumn(name="username")
     private User user;

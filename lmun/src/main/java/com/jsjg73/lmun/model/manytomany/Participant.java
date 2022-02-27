@@ -22,17 +22,17 @@ public class Participant {
     @EmbeddedId
     private ParticipantKey id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @MapsId("meeting_id")
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @MapsId("username")
     @JoinColumn(name = "username")
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="departure_id")
     private Location departure;
 

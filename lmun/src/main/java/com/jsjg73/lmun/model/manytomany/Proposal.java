@@ -28,17 +28,17 @@ public class Proposal {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @MapsId("meeting_id")
     @JoinColumn(name="meeting_id")
     private Meeting meeting;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @MapsId("location_id")
     @JoinColumn(name="location_id")
     private Location location;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="username")
     private User proposer;
 
