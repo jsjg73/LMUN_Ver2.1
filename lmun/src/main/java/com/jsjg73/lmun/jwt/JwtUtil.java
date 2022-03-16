@@ -22,12 +22,18 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtUtil {
+
+	private final JwtConfig jwtConfig;
+	private final SecretKey secretKey;
+	private final UserService userService;
+
 	@Autowired
-	JwtConfig jwtConfig;
-	@Autowired
-	SecretKey secretKey;
-	@Autowired
-	UserService userService;
+	public JwtUtil(JwtConfig jwtConfig, SecretKey secretKey, UserService userService) {
+		this.jwtConfig = jwtConfig;
+		this.secretKey = secretKey;
+		this.userService = userService;
+	}
+
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}

@@ -31,12 +31,17 @@ import java.util.stream.Stream;
 @Transactional
 public class UserService implements UserDetailsService {
 	
+	private final UserRepository userRepository;
+	private final LocationRepository locationRepository;
+	private final PasswordEncoder passwordEncoder;
+
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private LocationRepository locationRepository;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	public UserService(UserRepository userRepository, LocationRepository locationRepository, PasswordEncoder passwordEncoder) {
+		this.userRepository = userRepository;
+		this.locationRepository = locationRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository

@@ -22,10 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	private JwtConfig jwtConfig;
-	private JwtUtil jwtUtil;
-	private PasswordEncoder passwordEncoder;
-	private UserService userService;
+	private final JwtConfig jwtConfig;
+	private final JwtUtil jwtUtil;
+	private final PasswordEncoder passwordEncoder;
+	private final UserService userService;
 
 	@Autowired
 	public SecurityConfig(JwtConfig jwtConfig, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserService userService) {

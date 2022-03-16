@@ -17,11 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/meeting")
 public class MeetingResource {
+    private final MeetingService meetingService;
+    private final JwtUtil jwtUtil;
+
     @Autowired
-    MeetingService meetingService;
-    
-    @Autowired
-    JwtUtil jwtUtil;
+    public MeetingResource(MeetingService meetingService, JwtUtil jwtUtil) {
+        this.meetingService = meetingService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping
     public ResponseEntity<MeetingDto> registerMeeting(@RequestBody MeetingDto meetingDto, Authentication auth, HttpServletResponse httpServletResponse){
