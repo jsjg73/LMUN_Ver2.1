@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MeetingResource {
     @Autowired
     MeetingService meetingService;
-    @Autowired
-    UserService userService;
+    
     @Autowired
     JwtUtil jwtUtil;
 
